@@ -47,9 +47,10 @@
     #warning > div { 
       background-color: #333; 
       color: white; 
-      padding: 20px; 
+      padding: 40px; 
       border-radius: 10px; 
-      max-width: 80%; 
+      max-width: 90%; 
+      font-size: 18px;
       box-shadow: 0 0 10px rgba(0,0,0,0.5); 
     }
     #close-warning {
@@ -60,6 +61,8 @@
       border-radius: 5px;
       cursor: pointer;
       font-family: Impact, sans-serif;
+      font-size: 18px;
+      margin-top: 10px;
     }
     #timer { 
       font-size: 30px; 
@@ -95,13 +98,23 @@
       display: none; 
       font-size: 24px; 
     }
-    /* New style for copyright text */
     #copyright-text {
-      margin-left: auto; /* pushes it to right */
+      margin-left: auto; 
       margin-right: 20px;
       font-size: 14px;
       white-space: nowrap;
       user-select: none;
+    }
+    #warning-header {
+      font-size: 28px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    #warning label {
+      display: block;
+      margin-top: 20px;
+      font-size: 16px;
     }
   </style>
 </head>
@@ -110,8 +123,11 @@
     <meta name="description" content="Testing: 30 minute sessions, and some downtimes, will be adding multiple servers soon!">
   <div id="warning">
     <div>
+      <div id="warning-header">Thanks for using CVM!</div>
       <p>If nothing shows up, and it's just a black screen, many VMS are being used currently, so wait some time (60 min to 24 hours), and if it persists, email broken-vm@craz.top!</p>
-      <button id="close-warning">Start session</button>
+      <p>Warning: Do not use keybinds or keystrokes like ctrl+W or ctrl+R, it will stop your session, and you'll lose your progress.</p>
+      <label><input type="checkbox" id="acknowledge-checkbox"> I understand.</label>
+      <button id="close-warning" disabled>Start session</button>
     </div>
   </div>
   <div id="hyperbeam-container"></div>
@@ -146,11 +162,12 @@
       }
     }
 
-    // Warning close button
+    document.getElementById('acknowledge-checkbox').addEventListener('change', function() {
+      document.getElementById('close-warning').disabled = !this.checked;
+    });
+
     document.getElementById('close-warning').addEventListener('click', function() {
       document.getElementById('warning').style.display = 'none';
-      
-      // Start loading the VM and timer only after warning is closed
       start();
 
       let timeLeft = 1800;
@@ -169,7 +186,6 @@
       }, 1000);
     });
 
-    // Fullscreen button
     document.getElementById('fullscreen-btn').addEventListener('click', async () => {
       try {
         if (document.fullscreenEnabled) {
@@ -182,7 +198,6 @@
       }
     });
 
-    // Fullscreen change listener
     document.addEventListener('fullscreenchange', () => {
       if (document.fullscreenElement) {
         document.getElementById('hyperbeam-container').style.height = '100vh';
