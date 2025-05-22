@@ -100,13 +100,13 @@
 <body>
   <div id="warning">
     <div>
-      <p>If nothing shows up, and it's just a black screen, many VMS are being used currently, so wait some time (like 30 min to 24 hours), and if it persists, email broken-vm@craz.top!</p>
+      <p>If nothing shows up, and it's just a black screen, many VMS are being used currently, so wait some time (like 60 min to 24 hours), and if it persists, email broken-vm@craz.top!</p>
       <button id="close-warning">Start session</button>
     </div>
   </div>
   <div id="hyperbeam-container"></div>
   <div id="error-message">
-    <p>If nothing shows up, and it's just a black screen, many VMS are being used currently, so wait some time (like 30 min to 24 hours), and if it persists, email broken-vm@craz.top!</p>
+    <p>If nothing shows up, and it's just a black screen, many VMS are being used currently, so wait some time (like 60 min to 24 hours), and if it persists, email broken-vm@craz.top!</p>
   </div>
   <div id="bottom-bar">
     <span id="timer">8:00</span>
@@ -140,7 +140,7 @@
       // Start loading the VM and timer only after warning is closed
       start();
 
-      let timeLeft = 480; // 8 minutes in seconds
+      let timeLeft = 1200;
       const timerInterval = setInterval(() => {
         if (timeLeft > 0) {
           timeLeft--;
