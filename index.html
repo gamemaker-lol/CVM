@@ -5,136 +5,132 @@
   <meta http-equiv="Permissions-Policy" content="fullscreen=(self)">
   <title>Home</title>
   <style>
-    body, html { 
-      margin: 0; 
-      height: 100%; 
-      width: 100%; 
-      overflow-x: hidden; 
-      background-color: black; 
-      position: relative; 
-      font-family: Impact, sans-serif; 
-      color: white;
+    body, html {
+      margin: 0; height: 100%; width: 100%;
+      overflow-x: hidden; background: black;
+      font-family: Impact, sans-serif; color: white;
+      position: relative;
     }
     * { box-sizing: border-box; }
 
-    #hyperbeam-container { 
-      width: 100%; 
-      height: calc(100vh - 50px); 
-      border: 5px solid #427B2C; 
+    #hyperbeam-container {
+      width: 100%; height: calc(100vh - 50px);
+      border: 5px solid #427B2C;
     }
-    #bottom-bar { 
-      position: absolute; 
-      bottom: 0; 
-      width: 100%; 
-      height: 50px; 
-      background-color: #427B2C; 
-      display: flex; 
-      justify-content: flex-start; 
-      align-items: center; 
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.5); 
+    #error-message {
+      color: #ff4444; text-align: center; padding: 20px;
+      display: none; font-weight: bold; font-size: 18px; margin-top: 10px;
     }
-
-    #timer { font-size: 30px; font-weight: bold; margin-left: 20px; }
-    #fullscreen-btn { background: none; border: none; padding: 0; margin-left: 20px; cursor: pointer; }
-    #fullscreen-btn img { height: 40px; width: auto; }
-    #fullscreen-timer { 
+    #bottom-bar {
+      position: absolute; bottom: 0; width: 100%; height: 50px;
+      background: #427B2C; display: flex; align-items: center;
+      padding-left: 20px; box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
+    }
+    #timer { font-size: 30px; font-weight: bold; }
+    #fullscreen-btn { background: none; border: none; margin-left: 20px; cursor: pointer; }
+    #fullscreen-btn img { height: 40px; }
+    #fullscreen-timer {
       position: fixed; top: 10px; left: 10px; z-index: 1001;
-      background-color: rgba(0,0,0,0.5); color: white;
-      padding: 5px 10px; border-radius: 5px;
-      display: none; font-size: 24px; 
+      background: rgba(0,0,0,0.5); color: white;
+      padding: 5px 10px; border-radius: 5px; display: none; font-size: 24px;
     }
-
-    #error-message { color: white; text-align: center; padding: 20px; display: none; }
-
     #copyright-text {
       margin-left: auto; margin-right: 20px;
-      font-size: 14px; white-space: nowrap; user-select: none;
+      font-size: 14px; user-select: none;
     }
 
+    /* Overlays */
     .overlay {
       position: fixed; top: 0; left: 0;
       width: 100%; height: 100%;
       background: rgba(0,0,0,0.85);
-      display: flex; justify-content: center; align-items: center;
-      z-index: 1000; 
+      display: none; justify-content: center; align-items: center;
+      z-index: 1000;
     }
-    .overlay > div {
-      background-color: #222; color: white;
-      padding: 40px; border-radius: 10px;
-      max-width: 90%; font-size: 18px;
+    .overlay.active { display: flex; }
+    .overlay-content {
+      background: #222; padding: 40px; border-radius: 10px;
+      max-width: 90%; text-align: center; color: white;
       box-shadow: 0 0 15px rgba(0,0,0,0.8);
-      text-align: center;
+      font-size: 18px;
     }
-
-    #warning-header {
-      font-size: 36px; font-weight: bold;
-      margin-bottom: 30px; color: #427B2C;
-      text-shadow: 1px 1px 5px #000;
+    .overlay-content h2 {
+      margin-top: 0; font-size: 32px; color: #427B2C;
     }
-    #warning p { margin-bottom: 15px; line-height: 1.5; }
-    #warning p.warning-text {
-      color: #ff4444; font-weight: bold; text-decoration: underline;
+    .overlay-content p { margin: 15px 0; line-height: 1.5; }
+    .overlay-content button {
+      margin: 10px 5px 0;
+      padding: 10px 20px; font-size: 18px;
+      border: none; border-radius: 5px;
+      cursor: pointer; font-family: Impact, sans-serif;
+      background: #427B2C; color: white;
     }
-    #warning label { display: block; margin-top: 20px; font-size: 16px; }
-
-    #close-warning {
-      background-color: #427B2C; color: white;
-      border: none; padding: 10px 20px;
-      border-radius: 5px; font-family: Impact, sans-serif;
-      font-size: 18px; margin-top: 10px; cursor: pointer;
-    }
-    #close-warning:disabled {
-      background-color: #2a4f1d; opacity: 0.6; cursor: not-allowed;
-    }
-
-    #minute-warning { display: none; }
-    .alert-icon {
-      font-size: 48px; vertical-align: middle; margin-right: 10px;
-    }
-    #minute-warning p { font-size: 20px; margin-bottom: 20px; }
-    #minute-ok {
-      background-color: #427B2C; color: white;
-      border: none; padding: 10px 20px;
-      border-radius: 5px; font-size: 18px;
-      cursor: pointer;
+    .overlay-content button:disabled {
+      background: #2a4f1d; cursor: not-allowed;
     }
   </style>
 </head>
 <body>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="beta release: chromium VM with 30-minute sessions (limited time), downtime may occur during high user activity.">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="description" content="beta release: chromium VM with 30-minute sessions, possible downtime during high load.">
 
-  <div id="warning" class="overlay">
-    <div>
-      <div id="warning-header">Thanks for using CVM!</div>
-      <p>If nothing shows up, and it's just a black screen, many VMs are being used currently. Wait 60 minutes to 24 hours, and if it persists, email <b>broken-vm@craz.top</b>.</p>
-      <p>Alternative VM servers may be added if CVM recieves a <b>ton</b> of users.</p>
-      <p class="warning-text">Warning: Do not use keybinds like <b>Ctrl+W</b> or <b>Ctrl+R</b> — they will end your session and you'll lose your progress.</p>
-      <label><input type="checkbox" id="acknowledge-checkbox"> I understand.</label>
-      <button id="close-warning" disabled>Start session</button>
-      <p style="margin-top: 10px; font-size: 14px;"><i>Version: 1.0</i></p>
+  <!-- Initial warning overlay -->
+  <div id="warning" class="overlay active">
+    <div class="overlay-content">
+      <h2>Thanks for using CVM!</h2>
+      <p>This app is in beta, and bugs may occur, if you found one, please email <b>broken-vm@craz.top</b>.</p>
+      <p>Alternative VM servers may be added if CVM receives a <b>ton</b> of users.</p>
+      <p style="color:#ff4444;font-weight:bold;text-decoration:underline;">
+        Warning: Do not use keybinds like <b>Ctrl+W</b> or <b>Ctrl+R</b> — they will end your session and you'll lose your progress.
+      </p>
+      <label><input type="checkbox" id="acknowledge-checkbox"> I understand.</label><br>
+      <button id="close-warning" disabled>Start session!</button><br>
+      <i style="font-size:14px;margin-top:10px;display:block;">Version: 1.1</i>
     </div>
   </div>
 
+  <!-- One-minute remaining overlay -->
   <div id="minute-warning" class="overlay">
-    <div>
-      <p><span class="alert-icon">⚠️</span>There is one minute left in your session, you might want to wrap things up before the timer runs out...</p>
+    <div class="overlay-content">
+      <p><span style="font-size:48px;">⚠️</span> There is one minute left in your session, you might want to wrap things up before the timer runs out...</p>
       <button id="minute-ok">OK</button>
     </div>
   </div>
 
-  <div id="hyperbeam-container"></div>
-  <div id="error-message">
-    <p>If nothing shows up, and it's just a black screen, many VMs are being used currently, so wait some time (60 min to 24 hours), and if it persists, email broken-vm@craz.top!</p>
+  <!-- Black-screen notification (5s after start) -->
+  <div id="black-notif" class="overlay">
+    <div class="overlay-content">
+      <p>See only a black screen?</p>
+      <button id="notif-yes">Yes, why?</button>
+      <button id="notif-no">No, go away.</button>
+    </div>
   </div>
+
+  <!-- Custom alert after “Yes” -->
+<div id="black-alert" class="overlay">
+  <div class="overlay-content" style="display: flex; align-items: flex-start; gap: 15px;">
+    <div style="font-size: 48px; line-height: 1;">💀</div>
+    <div>
+      <p>If you just see a black screen for more than 5 seconds, it’s either:<br>
+         1. Hyperbeam was rate-limited<br>
+         2. Your network or school has blocked it<br>
+         3. We are currently on downtime.</p>
+      <p> </p>
+      <p>Check back in 60 minutes to 24 hours, and if the issue persists, consider emailing <b>broken-vm@craz.top</b></p>
+      <button id="black-ok">OK</button>
+    </div>
+  </div>
+</div>
+
+  <!-- VM container & error message -->
+  <div id="hyperbeam-container"></div>
+  <div id="error-message"></div>
+
+  <!-- Bottom bar -->
   <div id="bottom-bar">
     <span id="timer">30:00</span>
-    <button id="fullscreen-btn">
-      <img src="https://raw.githubusercontent.com/worspaces/CVM/refs/heads/main/img/fullscreen.png" alt="..." draggable=false>
-    </button>
-    <span id="copyright-text">
-      2025 © Copyright WZ LLC (Wilbur Zenith LLC), VM produced by Hyperbeam.
-    </span>
+    <button id="fullscreen-btn"><img src="https://raw.githubusercontent.com/worspaces/CVM/refs/heads/main/img/fullscreen.png" alt="..."></button>
+    <span id="copyright-text">2025 © WZ LLC, VM by Hyperbeam.</span>
   </div>
   <span id="fullscreen-timer">30:00</span>
 
@@ -144,82 +140,83 @@
     let minuteAlertShown = false;
 
     async function start() {
+      // 5-second black-screen notification
+      setTimeout(() => {
+        document.getElementById('black-notif').classList.add('active');
+      }, 5000);
+
       try {
         const res = await fetch("https://hyperbeam.stilla-rrms-wlwv-k12-or-us.workers.dev/", { method: "POST" });
         const { embed_url } = await res.json();
         await Hyperbeam(document.getElementById("hyperbeam-container"), embed_url, {
           iframeAttributes: { allow: "fullscreen" }
         });
-      } catch (error) {
-        document.getElementById('error-message').style.display = 'block';
+      } catch {
+        const e = document.getElementById('error-message');
+        e.style.display = 'block';
+        e.textContent = "Too many users are using CVM right now, try again in 60 minutes - 24 hours.";
       }
     }
 
-    document.getElementById('acknowledge-checkbox').addEventListener('change', function() {
-      document.getElementById('close-warning').disabled = !this.checked;
+    // Initial warning logic
+    document.getElementById('acknowledge-checkbox').addEventListener('change', e => {
+      document.getElementById('close-warning').disabled = !e.target.checked;
+    });
+    document.getElementById('close-warning').addEventListener('click', () => {
+      document.getElementById('warning').classList.remove('active');
+      start();
+      startTimer();
     });
 
-    document.getElementById('close-warning').addEventListener('click', function() {
-      document.getElementById('warning').style.display = 'none';
-      start();
+    // One-minute warning
+    document.getElementById('minute-ok').addEventListener('click', () => {
+      document.getElementById('minute-warning').classList.remove('active');
+    });
 
-      let timeLeft = 1800;
-      const timerInterval = setInterval(() => {
-        if (timeLeft > 0) {
-          timeLeft--;
-          const minutes = Math.floor(timeLeft / 60);
-          const seconds = timeLeft % 60;
-          const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-          document.getElementById('timer').textContent = timeString;
-          document.getElementById('fullscreen-timer').textContent = timeString;
+    // Black-screen notif buttons
+    document.getElementById('notif-no').addEventListener('click', () => {
+      document.getElementById('black-notif').classList.remove('active');
+    });
+    document.getElementById('notif-yes').addEventListener('click', () => {
+      document.getElementById('black-notif').classList.remove('active');
+      document.getElementById('black-alert').classList.add('active');
+    });
 
-          if (timeLeft === 60 && !minuteAlertShown) {
+    // Black-screen alert OK
+    document.getElementById('black-ok').addEventListener('click', () => {
+      window.location.href = 'https://cvm.craz.top/';
+    });
+
+    // Fullscreen change
+    document.getElementById('fullscreen-btn').addEventListener('click', async () => {
+      if (document.documentElement.requestFullscreen) {
+        await document.documentElement.requestFullscreen();
+        document.getElementById('fullscreen-timer').style.display = 'block';
+      }
+    });
+
+    // Countdown timer + one-minute pop
+    function startTimer() {
+      let t = 1800;
+      const iv = setInterval(() => {
+        if (t > 0) {
+          t--;
+          const m = Math.floor(t/60), s = t%60;
+          document.getElementById('timer').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+          document.getElementById('fullscreen-timer').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+          if (t === 60 && !minuteAlertShown) {
             minuteAlertShown = true;
-            document.getElementById('minute-warning').style.display = 'flex';
+            document.getElementById('minute-warning').classList.add('active');
           }
         } else {
-          clearInterval(timerInterval);
+          clearInterval(iv);
           window.location.href = 'https://wilburz.com/';
         }
       }, 1000);
-    });
+    }
 
-    document.getElementById('minute-ok').addEventListener('click', () => {
-      document.getElementById('minute-warning').style.display = 'none';
-    });
-
-    document.getElementById('fullscreen-btn').addEventListener('click', async () => {
-      try {
-        if (document.fullscreenEnabled) {
-          await document.documentElement.requestFullscreen();
-        } else {
-          alert('Fullscreen is not supported in this context. This may be due to browser restrictions or the page being embedded in an iframe.');
-        }
-      } catch (err) {
-        alert('Failed to enter fullscreen mode: ' + err.message);
-      }
-    });
-
-    document.addEventListener('fullscreenchange', () => {
-      const hb = document.getElementById('hyperbeam-container');
-      const bb = document.getElementById('bottom-bar');
-      const ft = document.getElementById('fullscreen-timer');
-      if (document.fullscreenElement) {
-        hb.style.height = '100vh';
-        bb.style.display = 'none';
-        ft.style.display = 'block';
-      } else {
-        hb.style.height = 'calc(100vh - 50px)';
-        bb.style.display = 'flex';
-        ft.style.display = 'none';
-      }
-    });
-
-    // ✅ Prevent accidental closing or refreshing
-    window.addEventListener('beforeunload', function (e) {
-      e.preventDefault();
-      e.returnValue = '';
-    });
+    // Prevent accidental close
+    window.addEventListener('beforeunload', e => { e.preventDefault(); e.returnValue = ''; });
   </script>
 </body>
 </html>
