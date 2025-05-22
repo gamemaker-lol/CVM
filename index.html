@@ -16,6 +16,8 @@
       color: white;
     }
     * { box-sizing: border-box; }
+
+    /* Main VM container */
     #hyperbeam-container { 
       width: 100%; 
       height: calc(100vh - 50px); 
@@ -32,107 +34,109 @@
       align-items: center; 
       box-shadow: 0 -2px 10px rgba(0,0,0,0.5); 
     }
-    #warning { 
-      position: fixed; 
-      top: 0; 
-      left: 0; 
-      width: 100%; 
-      height: 100%; 
-      background: rgba(0,0,0,0.8); 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
+
+    /* Fullscreen timer & button */
+    #timer { font-size: 30px; font-weight: bold; margin-left: 20px; }
+    #fullscreen-btn { background: none; border: none; padding: 0; margin-left: 20px; cursor: pointer; }
+    #fullscreen-btn img { height: 40px; width: auto; }
+    #fullscreen-timer { 
+      position: fixed; top: 10px; left: 10px; z-index: 1001;
+      background-color: rgba(0,0,0,0.5); color: white;
+      padding: 5px 10px; border-radius: 5px;
+      display: none; font-size: 24px; 
+    }
+
+    /* Error message */
+    #error-message { color: white; text-align: center; padding: 20px; display: none; }
+
+    /* Copyright */
+    #copyright-text {
+      margin-left: auto; margin-right: 20px;
+      font-size: 14px; white-space: nowrap; user-select: none;
+    }
+
+    /* Shared overlay styles */
+    .overlay {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      display: flex; justify-content: center; align-items: center;
       z-index: 1000; 
     }
-    #warning > div { 
-      background-color: #333; 
-      color: white; 
-      padding: 40px; 
-      border-radius: 10px; 
-      max-width: 90%; 
-      font-size: 18px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5); 
-    }
-    #close-warning {
-      background-color: #427B2C;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-family: Impact, sans-serif;
-      font-size: 18px;
-      margin-top: 10px;
-    }
-    #timer { 
-      font-size: 30px; 
-      font-weight: bold; 
-      margin-left: 20px; 
-    }
-    #fullscreen-btn { 
-      background: none; 
-      border: none; 
-      padding: 0; 
-      margin-left: 20px; 
-      cursor: pointer; 
-    }
-    #fullscreen-btn img {
-      height: 40px;
-      width: auto;
-    }
-    #error-message { 
-      color: white; 
-      text-align: center; 
-      padding: 20px; 
-      display: none; 
-    }
-    #fullscreen-timer { 
-      position: fixed; 
-      top: 10px; 
-      left: 10px; 
-      z-index: 1001; 
-      background-color: rgba(0,0,0,0.5); 
-      color: white; 
-      padding: 5px 10px; 
-      border-radius: 5px; 
-      display: none; 
-      font-size: 24px; 
-    }
-    #copyright-text {
-      margin-left: auto; 
-      margin-right: 20px;
-      font-size: 14px;
-      white-space: nowrap;
-      user-select: none;
-    }
-    #warning-header {
-      font-size: 28px;
-      font-weight: bold;
+    .overlay > div {
+      background-color: #222; color: white;
+      padding: 40px; border-radius: 10px;
+      max-width: 90%; font-size: 18px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.8);
       text-align: center;
-      margin-bottom: 20px;
     }
-    #warning label {
-      display: block;
-      margin-top: 20px;
-      font-size: 16px;
+
+    /* Initial warning header */
+    #warning-header {
+      font-size: 36px; font-weight: bold;
+      margin-bottom: 30px; color: #427B2C;
+      text-shadow: 1px 1px 5px #000;
+    }
+    #warning p { margin-bottom: 15px; line-height: 1.5; }
+    #warning p.warning-text {
+      color: #ff4444; font-weight: bold; text-decoration: underline;
+    }
+    #warning label { display: block; margin-top: 20px; font-size: 16px; }
+
+    /* Buttons */
+    #close-warning {
+      background-color: #427B2C; color: white;
+      border: none; padding: 10px 20px;
+      border-radius: 5px; font-family: Impact, sans-serif;
+      font-size: 18px; margin-top: 10px; cursor: pointer;
+    }
+    #close-warning:disabled {
+      background-color: #2a4f1d; opacity: 0.6; cursor: not-allowed;
+    }
+
+    /* One-minute alert specifics */
+    #minute-warning { display: none; }
+    .alert-icon {
+      font-size: 48px; vertical-align: middle; margin-right: 10px;
+    }
+    #minute-warning p { font-size: 20px; margin-bottom: 20px; }
+    #minute-ok {
+      background-color: #427B2C; color: white;
+      border: none; padding: 10px 20px;
+      border-radius: 5px; font-size: 18px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Testing: 30 minute sessions, and some downtimes, will be adding multiple servers soon!">
-  <div id="warning">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="beta release: chromium VM with 30-minute sessions (limited time), downtime may occur during high user activity.">
+
+  <!-- Initial warning -->
+  <div id="warning" class="overlay">
     <div>
       <div id="warning-header">Thanks for using CVM!</div>
-      <p>If nothing shows up, and it's just a black screen, many VMS are being used currently, so wait some time (60 min to 24 hours), and if it persists, email broken-vm@craz.top!</p>
-      <p>Warning: Do not use keybinds or keystrokes like ctrl+W or ctrl+R, it will stop your session, and you'll lose your progress.</p>
+      <p>If nothing shows up, and it's just a black screen, many VMs are being used currently. Wait 60 minutes to 24 hours, and if it persists, email <b>broken-vm@craz.top</b>.</p>
+      <p>Alternative VM servers may be added if CVM recieves a <b>ton</b> of users.</p>
+      <p class="warning-text">Warning: Do not use keybinds like <b>Ctrl+W</b> or <b>Ctrl+R</b> — they will end your session and you'll lose your progress.</p>
       <label><input type="checkbox" id="acknowledge-checkbox"> I understand.</label>
       <button id="close-warning" disabled>Start session</button>
+      <p style="margin-top: 10px; font-size: 14px;"><i>Version: 1.0</i></p>
     </div>
   </div>
+
+  <!-- One-minute remaining alert -->
+  <div id="minute-warning" class="overlay">
+    <div>
+      <p><span class="alert-icon">⚠️</span>There is one minute left in your session, you might want to wrap things up before the timer runs out...</p>
+      <button id="minute-ok">OK</button>
+    </div>
+  </div>
+
+  <!-- VM container & UI -->
   <div id="hyperbeam-container"></div>
   <div id="error-message">
-    <p>If nothing shows up, and it's just a black screen, many VMS are being used currently, so wait some time (60 min to 24 hours), and if it persists, email broken-vm@craz.top!</p>
+    <p>If nothing shows up, and it's just a black screen, many VMs are being used currently, so wait some time (60 min to 24 hours), and if it persists, email broken-vm@craz.top!</p>
   </div>
   <div id="bottom-bar">
     <span id="timer">30:00</span>
@@ -148,11 +152,11 @@
   <script type="module">
     import Hyperbeam from "https://unpkg.com/@hyperbeam/web@latest/dist/index.js";
 
+    let minuteAlertShown = false;
+
     async function start() {
       try {
-        const res = await fetch("https://hyperbeam.stilla-rrms-wlwv-k12-or-us.workers.dev/", {
-          method: "POST"
-        });
+        const res = await fetch("https://hyperbeam.stilla-rrms-wlwv-k12-or-us.workers.dev/", { method: "POST" });
         const { embed_url } = await res.json();
         await Hyperbeam(document.getElementById("hyperbeam-container"), embed_url, {
           iframeAttributes: { allow: "fullscreen" }
@@ -162,10 +166,12 @@
       }
     }
 
+    // Enable start button when checkbox checked
     document.getElementById('acknowledge-checkbox').addEventListener('change', function() {
       document.getElementById('close-warning').disabled = !this.checked;
     });
 
+    // Start session
     document.getElementById('close-warning').addEventListener('click', function() {
       document.getElementById('warning').style.display = 'none';
       start();
@@ -174,11 +180,17 @@
       const timerInterval = setInterval(() => {
         if (timeLeft > 0) {
           timeLeft--;
-          let minutes = Math.floor(timeLeft / 60);
-          let seconds = timeLeft % 60;
+          const minutes = Math.floor(timeLeft / 60);
+          const seconds = timeLeft % 60;
           const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
           document.getElementById('timer').textContent = timeString;
           document.getElementById('fullscreen-timer').textContent = timeString;
+
+          // Show one-minute alert at 60 seconds
+          if (timeLeft === 60 && !minuteAlertShown) {
+            minuteAlertShown = true;
+            document.getElementById('minute-warning').style.display = 'flex';
+          }
         } else {
           clearInterval(timerInterval);
           window.location.href = 'https://wilburz.com/';
@@ -186,6 +198,12 @@
       }, 1000);
     });
 
+    // Dismiss one-minute alert
+    document.getElementById('minute-ok').addEventListener('click', () => {
+      document.getElementById('minute-warning').style.display = 'none';
+    });
+
+    // Fullscreen handling
     document.getElementById('fullscreen-btn').addEventListener('click', async () => {
       try {
         if (document.fullscreenEnabled) {
@@ -193,20 +211,22 @@
         } else {
           alert('Fullscreen is not supported in this context. This may be due to browser restrictions or the page being embedded in an iframe.');
         }
-      } catch (error) {
-        alert('Failed to enter fullscreen mode: ' + error.message);
+      } catch (err) {
+        alert('Failed to enter fullscreen mode: ' + err.message);
       }
     });
-
     document.addEventListener('fullscreenchange', () => {
+      const hb = document.getElementById('hyperbeam-container');
+      const bb = document.getElementById('bottom-bar');
+      const ft = document.getElementById('fullscreen-timer');
       if (document.fullscreenElement) {
-        document.getElementById('hyperbeam-container').style.height = '100vh';
-        document.getElementById('bottom-bar').style.display = 'none';
-        document.getElementById('fullscreen-timer').style.display = 'block';
+        hb.style.height = '100vh';
+        bb.style.display = 'none';
+        ft.style.display = 'block';
       } else {
-        document.getElementById('hyperbeam-container').style.height = 'calc(100vh - 50px)';
-        document.getElementById('bottom-bar').style.display = 'flex';
-        document.getElementById('fullscreen-timer').style.display = 'none';
+        hb.style.height = 'calc(100vh - 50px)';
+        bb.style.display = 'flex';
+        ft.style.display = 'none';
       }
     });
   </script>
