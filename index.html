@@ -100,21 +100,21 @@
 <body>
   <div id="warning">
     <div>
-      <p>If nothing shows up, and it's just a black screen, many VMS are being used currently, so wait some time (like 60 min to 24 hours), and if it persists, email broken-vm@craz.top!</p>
+      <p>If nothing shows up, and it's just a black screen, many VMS are being used currently, so wait some time (60 min to 24 hours), and if it persists, email broken-vm@craz.top!</p>
       <button id="close-warning">Start session</button>
     </div>
   </div>
   <div id="hyperbeam-container"></div>
   <div id="error-message">
-    <p>If nothing shows up, and it's just a black screen, many VMS are being used currently, so wait some time (like 60 min to 24 hours), and if it persists, email broken-vm@craz.top!</p>
+    <p>If nothing shows up, and it's just a black screen, many VMS are being used currently, so wait some time (60 min to 24 hours), and if it persists, email broken-vm@craz.top!</p>
   </div>
   <div id="bottom-bar">
-    <span id="timer">8:00</span>
+    <span id="timer">30:00</span>
     <button id="fullscreen-btn">
       <img src="https://raw.githubusercontent.com/worspaces/CVM/refs/heads/main/img/fullscreen.png" alt="Fullscreen">
     </button>
   </div>
-  <span id="fullscreen-timer">8:00</span>
+  <span id="fullscreen-timer">30:00</span>
 
   <script type="module">
     import Hyperbeam from "https://unpkg.com/@hyperbeam/web@latest/dist/index.js";
@@ -140,7 +140,7 @@
       // Start loading the VM and timer only after warning is closed
       start();
 
-      let timeLeft = 1200;
+      let timeLeft = 1800;
       const timerInterval = setInterval(() => {
         if (timeLeft > 0) {
           timeLeft--;
