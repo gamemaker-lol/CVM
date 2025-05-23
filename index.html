@@ -117,7 +117,7 @@
       </p>
       <label><input type="checkbox" id="acknowledge-checkbox"> I understand.</label><br>
       <button id="close-warning" disabled>Start session!</button><br>
-      <i style="font-size:14px;margin-top:10px;display:block;">Version: 1.1</i>
+      <i style="font-size:14px;margin-top:10px;display:block;">Version: 1.2</i>
     </div>
   </div>
 
@@ -257,26 +257,46 @@
       }
     });
 
-    function startTimer() {
-      let t = 1800;
-      setInterval(() => {
-        if (t > 0) {
-          t--;
-          const m = Math.floor(t/60), s = t%60;
-          const text = `${m}:${s.toString().padStart(2,'0')}`;
-          document.getElementById('timer').textContent = text;
-          document.getElementById('fullscreen-timer').textContent = text;
-          if (t === 60 && !minuteAlertShown) {
-            minuteAlertShown = true;
-            document.getElementById('minute-warning').classList.add('active');
-          }
-        } else {
-          window.location.href = 'https://wilburz.com/';
-        }
-      }, 1000);
-    }
+    let timeoutExpired = false;
 
-    window.addEventListener('beforeunload', e => { e.preventDefault(); e.returnValue = ''; });
+function startTimer() {
+  let t = 1800;
+  const interval = setInterval(() => {
+    if (t > 0) {
+      t--;
+      const m = Math.floor(t / 60), s = t % 60;
+      const text = `${m}:${s.toString().padStart(2, '0')}`;
+      document.getElementById('timer').textContent = text;
+      document.getElementById('fullscreen-timer').textContent = text;
+      if (t === 60 && !minuteAlertShown) {
+        minuteAlertShown = true;
+        document.getElementById('minute-warning').classList.add('active');
+      }
+    } else {
+      clearInterval(interval);
+      timeoutExpired = true;
+      window.removeEventListener('beforeunload', blockUnload); // Remove safety block
+      window.location.href = 'https://wilburz.com/';
+    }
+  }, 1000);
+}
+
+// Unload blocker used before time runs out
+function blockUnload(e) {
+  e.preventDefault();
+  e.returnValue = '';
+}
+
+// Attach unload blocker at the start
+window.addEventListener('beforeunload', blockUnload);
+
+// Detect if they try to stay after timeout
+window.addEventListener('visibilitychange', () => {
+  if (timeoutExpired && document.visibilityState === 'visible') {
+    // They came back to the tab after canceling navigation
+    window.location.href = 'https://wilburz.com/';
+  }
+});
   </script>
 </body>
 </html>
