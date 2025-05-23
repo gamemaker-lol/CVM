@@ -148,7 +148,7 @@
            1. There are too many users using the server that you are on currently<br>
            2. The school blocked the frame<br>
            3. We're down temporarily<br>
-           4. Hyperbeam was rate-limited</p>
+           4. HB was rate-limited</p>
         <p>Check back later or email <b>broken-vm@craz.top</b></p>
         <button id="black-ok">OK</button>
       </div>
@@ -161,13 +161,13 @@
 
   <!-- Bottom bar -->
   <div id="bottom-bar">
-    <span id="timer">30:00</span>
+    <span id="timer">20:00</span>
     <button id="fullscreen-btn"><img src="https://raw.githubusercontent.com/worspaces/CVM/refs/heads/main/img/fullscreen.png" alt="..." draggable=false></button>
-    <span id="copyright-text">2025 © WZ LLC, VM by Hyperbeam.</span>
+    <span id="copyright-text">2025 © WZ LLC, VM by HB.</span>
   </div>
 
   <!-- Fullscreen timer (top left overlay) -->
-  <span id="fullscreen-timer">30:00</span>
+  <span id="fullscreen-timer">20:00</span>
 
   <script type="module">
     import Hyperbeam from "https://unpkg.com/@hyperbeam/web@latest/dist/index.js";
@@ -266,7 +266,7 @@
     let timeoutExpired = false;
 
     function startTimer() {
-      let t = 1800;
+      let t = 1200;
       const interval = setInterval(() => {
         if (t > 0) {
           t--;
@@ -281,7 +281,7 @@
         } else {
           clearInterval(interval);
           timeoutExpired = true;
-          window.removeEventListener('beforeunload', blockUnload); // Remove safety block
+          window.removeEventListener('beforeunload', blockUnload);
           window.location.href = 'https://craz.top/';
         }
       }, 1000);
