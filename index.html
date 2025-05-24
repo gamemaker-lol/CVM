@@ -338,9 +338,12 @@
       }
     });
 
-   document.addEventListener('keydown', function (e) {
+document.addEventListener('keydown', function (e) {
     if (e.ctrlKey) {
-        e.preventDefault();
+        const allowedKeys = ['c', 'v', 'C', 'V'];
+        if (!allowedKeys.includes(e.key)) {
+            e.preventDefault();
+        }
     }
 });
   </script>
