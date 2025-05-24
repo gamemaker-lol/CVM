@@ -137,7 +137,7 @@
       <h2>Thanks for using CVM!</h2>
       <p>This app is in beta, and bugs may occur, if you found one, please email <b>broken-vm@craz.top</b>.</p>
       <i>Why is there a time limit?</i>
-      <p>There is a time limit to keep things fair for other users...</p>
+      <p>There is a time limit to keep things fair for other users, and to keep the servers up without crashing!</p>
       <p style="font-weight:bold;">
         <a href="https://cvm.rest/dev/" style="color:#427B2C;text-decoration:underline;font-family:Impact, sans-serif;">
           I'm a developer for CVM
@@ -186,6 +186,11 @@
            4. HB was rate-limited</p>
         <p>Check back later or email <b>broken-vm@craz.top</b></p>
         <button id="black-ok">OK</button>
+        <script>
+  document.getElementById('black-ok').addEventListener('click', function () {
+    window.location.href = 'https://cvm.rest';
+  });
+</script>
       </div>
     </div>
   </div>
@@ -321,7 +326,7 @@
           clearInterval(iv);
           timeoutExpired = true;
           window.removeEventListener('beforeunload', blockUnload);
-          window.location.href = 'https://craz.top/';
+          window.location.href = 'https://cvm.rest/';
         }
       }, 1000);
     }
@@ -329,7 +334,7 @@
     window.addEventListener('beforeunload', blockUnload);
     window.addEventListener('visibilitychange', () => {
       if (timeoutExpired && document.visibilityState==='visible') {
-        window.location.href = 'https://craz.top/';
+        window.location.href = 'https://cvm.rest/';
       }
     });
   </script>
