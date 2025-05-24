@@ -338,12 +338,9 @@
       }
     });
 
-    document.addEventListener('keydown', function (e) {
+   document.addEventListener('keydown', function (e) {
     if (e.ctrlKey) {
-        const key = e.key.toLowerCase();
-        if (key === 'w' || key === 'r' || key === 't') {
-            e.preventDefault();
-        }
+        e.preventDefault();
     }
 });
   </script>
