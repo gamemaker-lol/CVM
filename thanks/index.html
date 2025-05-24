@@ -1,2 +1,97 @@
-<b>enjoy this unrestricted experience! made with ❤️ by Craz</b>
-<title>CVM</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fast Sequential Fade-In List</title>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      background-color: black;
+      font-family: Impact, sans-serif;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      user-select: none;
+      padding: 0 1rem;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .fade-in {
+      opacity: 0;
+      animation: fadeIn 0.5s ease-in-out forwards;
+    }
+
+    .delay-1 { animation-delay: 0.2s; }
+    .delay-2 { animation-delay: 0.4s; }
+    .delay-3 { animation-delay: 0.6s; }
+    .delay-4 { animation-delay: 0.8s; }
+
+    .gradient-text {
+      font-size: 4rem;
+      font-weight: bold;
+      background: linear-gradient(90deg, #7cbf6a, #4b8b3b, #2f5822);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 8px rgba(75,139,59,0.8);
+      margin: 0;
+      padding: 0;
+    }
+
+    .subtext {
+      font-size: 1.5rem;
+      color: #7cbf6a;
+      margin-top: 0.5em;
+    }
+
+    .features-header {
+      margin-top: 3rem;
+      font-size: 2.5rem;
+      color: #4b8b3b;
+      font-weight: bold;
+      text-shadow: 0 0 6px rgba(75,139,59,0.6);
+    }
+
+    ul.features-list {
+      margin-top: 1rem;
+      max-width: 400px;
+      padding-left: 1.5rem;
+      font-size: 1.8rem;
+      color: #cce5b1;
+      line-height: 1.4;
+      letter-spacing: 0.05em;
+      text-align: left;
+      list-style-type: disc;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="gradient-text fade-in delay-1">
+    Enjoy the experience!
+  </h1>
+  <p class="subtext fade-in delay-2">
+    Made with ❤️ by Craz
+  </p>
+  <h2 class="features-header fade-in delay-3">
+    Features:
+  </h2>
+  <ul class="features-list fade-in delay-4">
+    <li>Adblocker</li>
+    <li>24 FPS</li>
+    <li>Longer timelimit than others</li>
+    <li>Rare downtimes</li>
+    <li>Unrestricted browsing</li>
+    <li>Ability to run games</li>
+  </ul>
+</body>
+</html>
