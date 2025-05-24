@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9773017729831801" crossorigin="anonymous"></script>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      min-height: 100vh;
+      width: 100%;
+      margin: 0;
+      background-color: black;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .motw-text {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #55CC25;
+      text-shadow: 0 0 2px #55CC25, 0 0 4px #55CC25;
+      margin-top: 20px;
+      text-align: center;
+    }
+    .motw-text a {
+      color: #55CC25;
+      font-size: 2rem;
+      font-weight: bold;
+      text-decoration: underline;
+      text-shadow: 0 0 10px #55CC25, 0 0 2px #55CC25;
+    }
+    .motw-text a:hover {
+      color: #fff;
+      text-shadow: 0 0 15px #55CC25, 0 0 20px #55CC25;
+    }
+
+    .form-container {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .form-container input {
+      padding: 10px;
+      font-size: 1.2rem;
+      background-color: #222;
+      color: #427B2C;
+      border: 1px solid #427B2C;
+      border-radius: 5px;
+    }
+    .form-container button {
+      padding: 10px 20px;
+      font-size: 1.2rem;
+      background-color: #427B2C;
+      color: black;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .Z3NITH-ad {
+            position: fixed;
+            bottom: 0;
+            width: 75%;
+            text-align: center;
+        }
+
+        .Z3NITH-ad img {
+            max-width: 50%;
+            height: auto;
+            cursor: pointer;
+        }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <form id="answerForm" autocomplete="off">
+      <input type="password" id="answer" name="answer" required autocomplete="off">
+      <button type="submit">Check</button>
+    </form>
+  </div>
+  <script>
+    document.getElementById('answerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const answer = document.getElementById('answer').value;
+      const data = JSON.stringify({ answer });
+
+      try {
+        const response = await fetch('https://hyperbeam-dev-access.stilla-rrms-wlwv-k12-or-us.workers.dev/verify', {
+          method: 'POST',
+          headers: { "Content-Type": "application/json" },
+          body: data
+        });
+
+        const result = await response.json();
+
+        if (result.success && result.redirect) {
+          // Create overlay
+          const overlay = document.createElement('div');
+          overlay.style.position = 'fixed';
+          overlay.style.top = 0;
+          overlay.style.left = 0;
+          overlay.style.width = '100%';
+          overlay.style.height = '100%';
+          overlay.style.backgroundColor = 'black';
+          overlay.style.color = 'white';
+          overlay.style.display = 'flex';
+          overlay.style.alignItems = 'center';
+          overlay.style.justifyContent = 'center';
+          overlay.style.fontWeight = 'bold';
+          overlay.style.fontSize = '1.5rem';
+          overlay.style.zIndex = 9999;  /* Ensure this is on top */
+          overlay.textContent = "You are unable to view the website again, refresh the page to get back!";
+
+          document.body.appendChild(overlay);
+
+          setTimeout(() => {
+            const newTab = window.open('about:blank', '_blank');
+            if (newTab) {
+              newTab.document.write(`
+                <html>
+                <head>
+                  <title>‎ </title>
+                  <style>
+                    html, body {
+                      margin: 0;
+                      padding: 0;
+                      height: 100%;
+                      overflow: hidden;
+                      background-color: black;
+                      display: flex;
+                    }
+                    body {
+                      flex: 1;
+                    }
+                    iframe {
+                      flex: 1;
+                      border: none;
+                    }
+                  </style>
+                </head>
+                <body>
+                  <iframe src="${result.redirect}" allowfullscreen></iframe>
+                </body>
+                </html>
+              `);
+              newTab.document.close();
+              setTimeout(() => {
+                window.close();
+              }, 500);
+            } else {
+              alert("Popup blocked.");
+            }
+          }, 0);
+        } else {
+          alert(result.message || 'Wrong!');
+        }
+      } catch (error) {
+        alert('Server error. Try again later (Takes about 1-2 days to fix).');
+      }
+    });
+  </script>
+</body>
+</html>
