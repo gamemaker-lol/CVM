@@ -152,7 +152,7 @@
         <button data-url="https://hyperbeam-4.stilla-rrms-wlwv-k12-or-us.workers.dev/">4 🟢</button>
       </div>
       <p style="color:#ff4444;font-weight:bold;text-decoration:underline;">
-        Warning: Do not use keybinds like <b>Ctrl+W</b> or <b>Ctrl+R</b> — they will end your session.
+        Warning: Keybinds on the VM will only work in fullscreen mode.
       </p>
       <label><input type="checkbox" id="acknowledge-checkbox"> I understand.</label><br>
       <button id="close-warning" disabled>Start session!</button><br>
@@ -337,6 +337,15 @@
         window.location.href = 'https://cvm.rest/';
       }
     });
+
+    document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey) {
+        const key = e.key.toLowerCase();
+        if (key === 'w' || key === 'r' || key === 't') {
+            e.preventDefault();
+        }
+    }
+});
   </script>
 </body>
 </html>
