@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CVM Updates</title>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      background-color: black;
+      font-family: Impact, sans-serif;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: center;
+      user-select: none;
+      padding: 2rem 1rem;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .fade-in {
+      opacity: 0;
+      animation: fadeIn 0.5s ease-in-out forwards;
+    }
+
+    .delay-1 { animation-delay: 0.2s; }
+    .delay-2 { animation-delay: 0.4s; }
+    .delay-3 { animation-delay: 0.6s; }
+    .delay-4 { animation-delay: 0.8s; }
+
+    .gradient-text {
+      font-size: 4rem;
+      font-weight: bold;
+      background: linear-gradient(90deg, #7cbf6a, #4b8b3b, #2f5822);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 8px rgba(75,139,59,0.8);
+      margin: 0;
+    }
+
+    .subtext {
+      font-size: 1.5rem;
+      color: #7cbf6a;
+      margin-top: 0.5em;
+      margin-bottom: 2rem;
+    }
+
+    .section-header-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2.5rem;
+    }
+
+    .version-label {
+      background-color: #4b8b3b;
+      color: black;
+      padding: 0.3rem 0.7rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-radius: 5px;
+      box-shadow: 0 0 6px rgba(75,139,59,0.6);
+    }
+
+    .section-header {
+      font-size: 2.5rem;
+      color: #4b8b3b;
+      font-weight: bold;
+      text-shadow: 0 0 6px rgba(75,139,59,0.6);
+    }
+
+    .description {
+      max-width: 600px;
+      font-size: 1.4rem;
+      color: #cce5b1;
+      line-height: 1.6;
+      margin: 1rem auto;
+    }
+
+    .update-block {
+      max-width: 600px;
+      background-color: rgba(124, 191, 106, 0.1);
+      border-left: 4px solid #7cbf6a;
+      padding: 1rem;
+      margin: 1rem 0;
+      text-align: left;
+      font-size: 1.4rem;
+      line-height: 1.5;
+      color: #e0f2d9;
+      box-shadow: 0 0 10px rgba(75,139,59,0.3);
+    }
+  </style>
+</head>
+<body>
+  <h1 class="gradient-text fade-in delay-1">
+    Updates
+  </h1>
+  <p class="subtext fade-in delay-2">
+    Check out some of the newest (or previous) updates here!
+  </p>
+
+  <div class="section-header-wrapper fade-in delay-3">
+    <span class="version-label">2.0</span>
+    <h2 class="section-header">What's New</h2>
+  </div>
+
+  <!-- Only 3 update blocks -->
+  <div class="update-block fade-in delay-4">
+    Added keybind support for fullscreen on the VM
+  </div>
+  <div class="update-block fade-in delay-4">
+    Adblocker added
+  </div>
+  <div class="update-block fade-in delay-4">
+    Revamped UI
+  </div>
+  <div class="update-block fade-in delay-4">
+    Added fullscreen timer
+  </div>
+
+  <div class="section-header-wrapper fade-in delay-3">
+    <span class="version-label">1.8</span>
+    <h2 class="section-header">Previous Updates</h2>
+  </div>
+  <div class="update-block fade-in delay-4">
+    Added server 4
+  </div>
+  <div class="update-block fade-in delay-4">
+    Some bugs fixed
+  </div>
+  <div class="update-block fade-in delay-4">
+    
+  </div>
+</body>
+</html>
