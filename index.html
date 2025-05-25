@@ -113,6 +113,18 @@
       height: 100% !important; box-sizing: border-box;
     }
     .fullscreen-mode { height: 100vh !important; box-sizing: border-box; }
+    /* 1) Target only the CVM image, set its height, and absorb all available space to its left */
+#bottom-bar img[alt="CVM"] {
+  height: 40px;
+  margin-left: auto;    /* pushes the image (and everything after it) to the right edge */
+  margin-right: 8px;    /* small gap between the image and the text */
+}
+
+/* 2) Reset the auto-margin on the copyright so it sits immediately after the logo */
+#copyright-text {
+  margin-left: 0;       /* cancel the existing “push-everything-left” rule */
+  margin-right: 20px;   /* keep your existing right padding */
+}
   </style>
 </head>
 
@@ -210,6 +222,7 @@
     <button id="fullscreen-btn">
       <img src="https://raw.githubusercontent.com/worspaces/CVM/refs/heads/main/img/fullscreen.png" alt="FS" draggable="false">
     </button>
+    <img src="https://raw.githubusercontent.com/worspaces/CVM/refs/heads/main/img/CVM.png" alt="CVM" draggable="false">
     <span id="copyright-text">2025 © WZ LLC, VM by HB.</span>
   </div>
 
