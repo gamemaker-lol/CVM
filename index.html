@@ -344,15 +344,21 @@
     });
 
 document.addEventListener('keydown', function (e) {
+    // Allow only Ctrl+C and Ctrl+V
     if (e.ctrlKey) {
         const allowedKeys = ['c', 'v', 'C', 'V'];
         if (!allowedKeys.includes(e.key)) {
             e.preventDefault();
         }
-    }
-
-    if (e.altKey) {
+    } else if (e.altKey || e.shiftKey || e.metaKey) {
+        // Block all other modifier key combinations
         e.preventDefault();
+    } else {
+        // Optionally block all single key presses like F1, Tab, etc.
+        const blockedKeys = ['F1', 'F5', 'Tab', 'Escape'];
+        if (blockedKeys.includes(e.key)) {
+            e.preventDefault();
+        }
     }
 });
   </script>
