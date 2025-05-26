@@ -38,8 +38,76 @@
     }
     #auth-error { color: #ff4444; min-height: 18px; margin-top: 8px; }
     /* —— END AUTH OVERLAY —— */
+/* Page-load alert overlay */
+/* Page-load alert overlay */
+/* --------------------------------------------------
+   OVERLAY & FADE
+   -------------------------------------------------- */
+/* Overlay full screen and centering */
+#alertBox {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(20, 40, 10, 0.95);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
 
-    /* your existing styles below… */
+  transition: opacity 0.76s ease;
+  opacity: 1;
+}
+
+#alertBox.fade-out {
+  opacity: 0;
+}
+
+/* Inner box with styles */
+#alertBox .alert-content {
+  background: linear-gradient(160deg, #2f4f1c, #5ca94b);
+  box-shadow: 0 0 30px #a5e168;
+  border-radius: 18px;
+  padding: 28px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  color: #e3ffd0;
+  font-family: Impact, sans-serif;
+}
+/* Text styling */
+#alertBox .alert-content h2 {
+  margin: 0 0 14px;
+  color: #c6ff9b;
+  font-size: 1.8em;
+  font-weight: 700;
+}
+
+#alertBox .alert-content p {
+  margin: 0 0 22px;
+  color: #e0ffd0;
+  line-height: 1.5;
+  font-size: 1.05em;
+}
+
+/* Button styling */
+#alertBox .alert-content button {
+  background: linear-gradient(to bottom, #7cd34c, #4d8025);
+  color: #f2ffe5;
+  font-weight: 700;
+  border: none;
+  padding: 12px 26px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1em;
+  box-shadow: 0 4px 8px #a0ea6eaa;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+#alertBox .alert-content button:hover {
+  background: linear-gradient(to bottom, #8ae659, #538c2c);
+  transform: scale(1.04);
+}
+    
     body, html {
       margin: 0;
       height: 100%;
@@ -340,6 +408,16 @@
   </script>
 
   <!-- Overlays -->
+
+    <!-- PAGE-LOAD ALERT (visible immediately) -->
+ <div id="alertBox">
+  <div class="alert-content">
+    <h2>Announcement:</h2>
+    <p>Added accounts and premium, this took like 7 hours to do so i guess that proves that i have no life 😬</p>
+    <button id="okButton">OK</button>
+  </div>
+</div>
+
   <div id="warning" class="overlay active">
     <div class="overlay-content">
       <h2>Thanks for using CVM!</h2>
@@ -774,6 +852,13 @@ if (isSignup) {
 
     updateAuthUI(); // Call it once after page load
   });
+
+   okButton.addEventListener("click", () => {
+  document.getElementById("alertBox").classList.add("fade-out");
+  setTimeout(() => {
+    document.getElementById("alertBox").style.display = "none";
+  }, 760);
+});
 </script>
 </body>
 </html>
