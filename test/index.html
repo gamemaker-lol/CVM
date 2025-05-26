@@ -319,6 +319,8 @@
       <button id="auth-guest">Guest</button>
       <div id="auth-error"></div>
       <button id="auth-toggle">Don't have an account? Sign up</button>
+      <i>Forgot password?</i>
+      <i>E-mail <u>recover@cvm.rest</u> to get assistance</i>
     </div>
   </div>
     </div>
@@ -341,11 +343,11 @@
   <div id="warning" class="overlay active">
     <div class="overlay-content">
       <h2>Thanks for using CVM!</h2>
-      <p>This app is in beta, and bugs may occur, if you found one, please email <b>broken-vm@craz.top</b>.</p>
+      <p>This app is in beta, and bugs may occur, if you found one, please email <b>broken-vm@craz.top</b></p>
       <i>Why is there a time limit?</i>
       <p>There is a time limit to keep things fair for other users, and to keep the servers up without crashing!</p>
       <i>What is premium?</i>
-      <p>Premium accounts have longer session time (40 minutes), have a special theme, and are the first priority to fixing! It is only $1, if you are interested in purchasing, Email <b>premium@cvm.rest</b>. (You are REQUIRED to have an account in order to purchase)</p>
+      <p>Premium accounts have longer session time (40 minutes), have a special theme, and are the first priority to fixing! It is only $1, if you are interested in purchasing, E-mail <b>premium@cvm.rest</b> (You are REQUIRED to have an account in order to purchase)</p>
       <p style="font-weight:bold;">
         <a href="https://cvm.rest/updates/" style="color:#55C629;text-decoration:underline;font-family:Impact, sans-serif;">
           Update logs
@@ -458,30 +460,34 @@ function initApp() {
   }
 
   // ======== replace server buttons if premium ========
-  const serverSwitch = document.getElementById("server-switch");
   if (isUserPremium()) {
-    serverSwitch.innerHTML = `
-      <button
-        data-url="https://hyperbeam-premium.stilla-rrms-wlwv-k12-or-us.workers.dev/"
-        class="selected"
-      >Main 🟢</button>
-    `;
+  // Change the <h2>
+  const warningH2 = document.querySelector('#warning h2');
+  if (warningH2) {
+    warningH2.textContent = "Thanks for buying premium and using CVM!";
   }
 
-    if (isUserPremium()) {
-    // Change the <h2>
-    const warningH2 = document.querySelector('#warning h2');
-    if (warningH2) {
-      warningH2.textContent = "Thanks for buying premium and using CVM!";
-    }
-
-    // Change the second paragraph inside #warning .overlay-content
-    const paras = document.querySelectorAll('#warning .overlay-content p');
-    if (paras[1]) {
-      paras[1].textContent =
-        "There is a time limit to keep things fair for other users, and to keep the servers up without crashing! Also, thank you for supporting the project!";
-    }
+  // Change the second paragraph inside #warning .overlay-content
+  const paras = document.querySelectorAll('#warning .overlay-content p');
+  if (paras[1]) {
+    paras[1].textContent =
+      "There is a time limit to keep things fair for other users, and to keep the servers up without crashing! Also thank you for supporting the project!";
   }
+
+  // Change the <i>What is premium?</i> to blank space
+  const premiumItalic = [...document.querySelectorAll('#warning .overlay-content i')]
+    .find(el => el.textContent.trim() === "What is premium?");
+  if (premiumItalic) {
+    premiumItalic.textContent = " ";
+  }
+
+  // Change the specific premium info paragraph
+  const premiumInfoPara = [...document.querySelectorAll('#warning .overlay-content p')]
+    .find(p => p.textContent.includes("Premium accounts have longer session time"));
+  if (premiumInfoPara) {
+    premiumInfoPara.innerHTML = `If you are enjoying premium, consider subscribing to my <a href="https://www.youtube.com/@wilburzenith" target="_blank" style="color:#55C629; text-decoration: underline;">YouTube</a> channel!`;
+  }
+}
 
   // ======== grab our selected serverUrl ========
   let serverUrl = document.querySelector('#server-switch button.selected').dataset.url;
