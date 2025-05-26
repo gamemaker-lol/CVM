@@ -604,12 +604,20 @@ document.addEventListener("DOMContentLoaded", () => {
   let started  = false;  // <— make sure initApp runs just once
 
   function finishAuth() {
-    overlay.style.display = "none";
-    if (!started) {
-      started = true;
-      initApp();
+  overlay.style.display = "none";
+  if (!started) {
+    started = true;
+
+    // Apply theme based on actual saved status
+    if (isUserPremium()) {
+      applyPremiumTheme();
+    } else {
+      removePremiumTheme();
     }
+
+    initApp();
   }
+}
 
   // Automatic login if token present
   if (localStorage.getItem("cvm_token")) {
