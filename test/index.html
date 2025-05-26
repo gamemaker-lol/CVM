@@ -621,7 +621,9 @@ localStorage.setItem("cvm_username", username);
 localStorage.setItem("cvm_premium", data.premium ? "1" : "0");
 
 if (isSignup) {
-  window.location.reload();
+  setTimeout(() => {
+        window.location.reload(true); // true = force reload from server
+      }, 100);
 } else {
   finishAuth();
 }
