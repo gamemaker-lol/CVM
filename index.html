@@ -574,13 +574,15 @@ function isUserPremium() {
 
 function initApp() {
   // ======== apply premium theme ========
-  if (isUserPremium()) {
-    document.documentElement.classList.add("premium-theme");
-  } else {
-    document.documentElement.classList.remove("premium-theme");
-  }
+  // Premium theme toggle
+// Premium theme toggle
+if (isUserPremium()) {
+  document.documentElement.classList.add("premium-theme");
+} else {
+  document.documentElement.classList.remove("premium-theme");
+}
 
-  // ======== replace server buttons if premium ========
+// ======== Replace content if user is premium ========
 if (isUserPremium()) {
   // Change the <h2>
   const warningH2 = document.querySelector('#warning h2');
@@ -594,11 +596,12 @@ if (isUserPremium()) {
     paras[1].textContent =
       "There is a time limit to keep things fair for other users, and to keep the servers up without crashing! Also thank you for supporting the project!";
   }
-if (paras[2]) {
+  if (paras[2]) {
     paras[2].innerHTML = 
       `If you are enjoying premium, consider subscribing to my <a href="https://www.youtube.com/@wilburzenith" target="_blank" style="color:#55C629; text-decoration:underline;">YouTube</a> channel!`;
   }
-  // Find the <i> element with text exactly "What is premium?" and replace text with a blank space
+
+  // Replace <i> with " " if text is "What is premium?"
   const italicElems = document.querySelectorAll('#warning .overlay-content i');
   italicElems.forEach(elem => {
     if (elem.textContent.trim() === "What is premium?") {
@@ -606,13 +609,42 @@ if (paras[2]) {
     }
   });
 
-  // Replace the #server-switch content
+  // Replace #server-switch content
   const serverSwitch = document.getElementById('server-switch');
   if (serverSwitch) {
     serverSwitch.innerHTML = `
       <button data-url="https://hungry-hippo.stilla-rrms-wlwv-k12-or-us.workers.dev/" class="selected">Main 🟢</button>
     `;
   }
+
+  // ======== Add personalized greeting below h2 ========
+  const timeOfDay = getTimeOfDay();
+  const username = getUsername();
+  const greetingText = `Good ${timeOfDay}, ${username}`;
+
+  const h2 = document.querySelector("#warning .overlay-content > h2");
+  if (h2) {
+    const greeting = document.createElement("p");
+    greeting.textContent = greetingText;
+    greeting.style.fontSize = "22px";
+    greeting.style.fontWeight = "bold";
+    greeting.style.marginTop = "8px";
+
+    h2.insertAdjacentElement("afterend", greeting);
+  }
+}
+
+// Helper function to get current time of day string
+function getTimeOfDay() {
+  const hour = new Date().getHours();
+  if (hour < 12) return "morning";
+  if (hour < 18) return "afternoon";
+  return "evening";
+}
+
+// Helper function to get username from localStorage (or fallback)
+function getUsername() {
+  return localStorage.getItem("cvm_username") || "User";
 }
 
   // ======== grab our selected serverUrl ========
