@@ -107,6 +107,46 @@
   background: linear-gradient(to bottom, #8ae659, #538c2c);
   transform: scale(1.04);
 }
+    .alert-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+
+    /* Make sure the alert overlay covers the whole screen and is centered */
+#alert-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7); /* semi-transparent black */
+  display: none; /* start hidden */
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* super high to be on top */
+}
+
+/* The alert box itself */
+#alert-box {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 8px;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+/* OK button styling */
+#alert-ok-btn {
+  margin-top: 20px;
+  padding: 8px 15px;
+  font-size: 16px;
+  cursor: pointer;
+}
     
     body, html {
       margin: 0;
@@ -763,9 +803,7 @@ localStorage.setItem("cvm_username", username);
 localStorage.setItem("cvm_premium", data.premium ? "1" : "0");
 
 if (isSignup) {
- setTimeout(() => {
-  window.location.href = 'https://cvm.rest/';
-}, 250);
+  finishAuth();
 } else {
   finishAuth();
 }
