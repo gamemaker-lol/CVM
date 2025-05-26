@@ -616,10 +616,15 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Unknown error");
-      localStorage.setItem("cvm_token", data.token);
-      localStorage.setItem("cvm_username", username);
-      localStorage.setItem("cvm_premium", data.premium ? "1" : "0"); // ✅ store as "1"/"0"
-      finishAuth();
+localStorage.setItem("cvm_token", data.token);
+localStorage.setItem("cvm_username", username);
+localStorage.setItem("cvm_premium", data.premium ? "1" : "0");
+
+if (isSignup) {
+  window.location.reload();
+} else {
+  finishAuth();
+}
     } catch (err) {
       errorEl.textContent = err.message;
     }
