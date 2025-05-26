@@ -763,7 +763,9 @@ localStorage.setItem("cvm_username", username);
 localStorage.setItem("cvm_premium", data.premium ? "1" : "0");
 
 if (isSignup) {
-  setTimeout(() => location.href = location.href, 250);
+ setTimeout(() => {
+  window.location.href = 'https://cvm.rest/';
+}, 250);
 } else {
   finishAuth();
 }
