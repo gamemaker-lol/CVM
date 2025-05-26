@@ -410,9 +410,15 @@ function isUserPremium() {
 
 ////////////////////////////////////////////////////////////////////////////////
 // 2) EVERYTHING THAT USED TO LIVE IN DOMContentLoaded
-//    We’ll move it into this function and call it *after* auth finishes.
 
 function initApp() {
+  // ======== apply premium theme ========
+  if (isUserPremium()) {
+    document.documentElement.classList.add("premium-theme");
+  } else {
+    document.documentElement.classList.remove("premium-theme");
+  }
+
   // ======== replace server buttons if premium ========
   const serverSwitch = document.getElementById("server-switch");
   if (isUserPremium()) {
@@ -509,69 +515,34 @@ function initApp() {
   });
 
   // ======== timer ========
- function startTimer() {
-  let t = isUserPremium() ? 40 * 60 : 20 * 60; // 40 mins for premium, else 20 mins
-
-  // Set the timer display text BEFORE the countdown starts
-  updateTimerDisplay(t);
-
-  const iv = setInterval(() => {
-    if (t > 0) {
-      t--;
-      updateTimerDisplay(t);
-      if (t === 60 && !minuteAlertShown) {
-        minuteAlertShown = true;
-        document.getElementById('minute-warning').classList.add('active');
+  function startTimer() {
+    let t = isUserPremium() ? 40 * 60 : 20 * 60;
+    updateTimerDisplay(t);
+    const iv = setInterval(() => {
+      if (t > 0) {
+        t--;
+        updateTimerDisplay(t);
+        if (t === 60 && !minuteAlertShown) {
+          minuteAlertShown = true;
+          document.getElementById('minute-warning').classList.add('active');
+        }
+      } else {
+        clearInterval(iv);
+        timeoutExpired = true;
+        window.removeEventListener('beforeunload', blockUnload);
+        window.location.href = 'https://cvm.rest/';
       }
-    } else {
-      clearInterval(iv);
-      timeoutExpired = true;
-      window.removeEventListener('beforeunload', blockUnload);
-      window.location.href = 'https://cvm.rest/';
-    }
-  }, 1000);
-}
-
-function updateTimerDisplay(seconds) {
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  const txt = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-  document.getElementById('timer').textContent = txt;
-  document.getElementById('fullscreen-timer').textContent = txt;
-}
-
-// On page load or after login/signup/guest selection:
-window.addEventListener('load', () => {
-  // Clear timer display at start
-  document.getElementById('timer').textContent = '';
-  document.getElementById('fullscreen-timer').textContent = '';
-
-  // Check premium status, set timer accordingly
-  if (isUserPremium()) {
-    timerDuration = 40 * 60; // 40 minutes for premium
-  } else {
-    timerDuration = 20 * 60; // 20 minutes for free users
+    }, 1000);
   }
-});
 
-  // Example: call this if user is premium
-function applyPremiumTheme() {
-  document.documentElement.classList.add('premium-theme');
-}
+  function updateTimerDisplay(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    const txt = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    document.getElementById('timer').textContent = txt;
+    document.getElementById('fullscreen-timer').textContent = txt;
+  }
 
-// Example: call this if user is NOT premium
-function removePremiumTheme() {
-  document.documentElement.classList.remove('premium-theme');
-}
-
-// Detect premium status & apply theme
-// Replace this with your actual logic
-
-if(userIsPremium) {
-  applyPremiumTheme();
-} else {
-  removePremiumTheme();
-}
   // ======== key blocking ========
   document.addEventListener('keydown', e => {
     if (e.ctrlKey) {
@@ -586,8 +557,6 @@ if(userIsPremium) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // 3) HOOKING UP AUTH FLOW
-// The page already has #auth-overlay with login/signup/guest logic.
-// We need to call initApp() once auth finishes, *and only once*.
 
 document.addEventListener("DOMContentLoaded", () => {
   const overlay = document.getElementById("overlay");
@@ -601,30 +570,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const WORKER_BASE = "https://cvm-accounts.stilla-rrms-wlwv-k12-or-us.workers.dev";
 
   let isSignup = false;
-  let started  = false;  // <— make sure initApp runs just once
+  let started  = false;
 
   function finishAuth() {
-  overlay.style.display = "none";
-  if (!started) {
-    started = true;
-
-    // Apply theme based on actual saved status
-    if (isUserPremium()) {
-      applyPremiumTheme();
-    } else {
-      removePremiumTheme();
+    overlay.style.display = "none";
+    if (!started) {
+      started = true;
+      initApp();
     }
-
-    initApp();
   }
-}
 
-  // Automatic login if token present
+  // Auto-login
   if (localStorage.getItem("cvm_token")) {
     finishAuth();
   }
 
-  // Guest can bypass
+  // Guest access
   guestBtn.addEventListener("click", finishAuth);
 
   // Toggle login/signup UI
@@ -657,7 +618,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!res.ok) throw new Error(data.error || "Unknown error");
       localStorage.setItem("cvm_token", data.token);
       localStorage.setItem("cvm_username", username);
-      localStorage.setItem("cvm_premium", data.premium ? "1" : "0");
+      localStorage.setItem("cvm_premium", data.premium ? "1" : "0"); // ✅ store as "1"/"0"
       finishAuth();
     } catch (err) {
       errorEl.textContent = err.message;
