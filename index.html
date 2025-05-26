@@ -538,7 +538,7 @@ function initApp() {
   }
 
   // ======== replace server buttons if premium ========
- if (isUserPremium()) {
+if (isUserPremium()) {
   // Change the <h2>
   const warningH2 = document.querySelector('#warning h2');
   if (warningH2) {
@@ -551,20 +551,19 @@ function initApp() {
     paras[1].textContent =
       "There is a time limit to keep things fair for other users, and to keep the servers up without crashing! Also thank you for supporting the project!";
   }
-
-  // Change the third paragraph inside #warning .overlay-content
-  if (paras[2]) {
+if (paras[2]) {
     paras[2].innerHTML = 
       `If you are enjoying premium, consider subscribing to my <a href="https://www.youtube.com/@wilburzenith" target="_blank" style="color:#55C629; text-decoration:underline;">YouTube</a> channel!`;
   }
+  // Find the <i> element with text exactly "What is premium?" and replace text with a blank space
+  const italicElems = document.querySelectorAll('#warning .overlay-content i');
+  italicElems.forEach(elem => {
+    if (elem.textContent.trim() === "What is premium?") {
+      elem.textContent = " ";
+    }
+  });
 
-  // Remove the <i>What is premium?</i> element by replacing its content with a blank space
-  const italicElem = document.querySelector('#warning .overlay-content i');
-  if (italicElem) {
-    italicElem.textContent = " ";
-  }
-
-  // Replace #server-switch innerHTML with only the premium main server button
+  // Replace the #server-switch content
   const serverSwitch = document.getElementById('server-switch');
   if (serverSwitch) {
     serverSwitch.innerHTML = `
