@@ -925,6 +925,34 @@ if (isSignup) {
   }, 760);
 });
 
+  document.addEventListener("DOMContentLoaded", () => {
+    const username = localStorage.getItem("cvm_username");
+    if (!username) return;
+
+    const hour = new Date().getHours();
+    let timeOfDay;
+    if (hour < 12) {
+      timeOfDay = "morning";
+    } else if (hour < 18) {
+      timeOfDay = "afternoon";
+    } else {
+      timeOfDay = "evening";
+    }
+
+    const greetingText = `Good ${timeOfDay}, ${username}`;
+
+    const h2 = document.querySelector("#warning .overlay-content > h2");
+    if (!h2) return;
+
+    const greeting = document.createElement("p");
+    greeting.textContent = greetingText;
+    greeting.style.fontSize = "22px";
+    greeting.style.fontWeight = "bold";
+    greeting.style.marginTop = "8px";
+
+    h2.insertAdjacentElement("afterend", greeting);
+  });
+
     window.addEventListener('beforeunload', function (e) {
     // Standard message isn't always shown, but needed to trigger the prompt
     e.preventDefault(); // Not strictly necessary, but good practice
