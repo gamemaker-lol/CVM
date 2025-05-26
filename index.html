@@ -849,38 +849,55 @@ if (isSignup) {
       errorEl.textContent = "";
     });
 
-    submit.addEventListener("click", async () => {
-      const username = userEl.value.trim();
-      const password = passEl.value;
+  submit.addEventListener("click", async () => {
+  const username = userEl.value.trim();
+  const password = passEl.value;
 
-      if (!username || !password) {
-        errorEl.textContent = "Please fill in both fields.";
-        return;
-      }
+  if (!username || !password) {
+    errorEl.textContent = "Please fill in both fields.";
+    return;
+  }
 
-      const endpoint = isSignup ? "/signup" : "/login";
+  // Disable the button to prevent double-clicks
+  submit.disabled = true;
+  errorEl.textContent = ""; // clear previous errors
 
-      try {
-        const res = await fetch(WORKER_BASE + endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password })
-        });
+  const endpoint = isSignup ? "/signup" : "/login";
 
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Unknown error");
-
-        localStorage.setItem("cvm_token", data.token);
-        localStorage.setItem("cvm_username", username);
-        localStorage.setItem("cvm_premium", data.premium ? "1" : "0");
-
-        updateAuthUI();
-        overlay.style.display = "none";
-      } catch (err) {
-        errorEl.textContent = err.message;
-      }
+  try {
+    const res = await fetch(WORKER_BASE + endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
     });
 
+    const data = await res.json();
+    if (!res.ok) {
+      // Check for unique constraint
+      if (data.error?.includes("UNIQUE")) {
+        throw new Error("That username is already taken. Please choose another.");
+      }
+      throw new Error(data.error || "Unknown error");
+    }
+
+    localStorage.setItem("cvm_token", data.token);
+    localStorage.setItem("cvm_username", username);
+    localStorage.setItem("cvm_premium", data.premium ? "1" : "0");
+
+    updateAuthUI();
+    overlay.style.display = "none";
+
+    // For signups, reload the page
+    if (isSignup) {
+      alert("Account successfully created!");
+      location.reload();
+    }
+
+  } catch (err) {
+    errorEl.textContent = err.message;
+    submit.disabled = false; // re-enable on error
+  }
+});
     guest.addEventListener("click", () => {
       overlay.style.display = "none";
     });
@@ -906,6 +923,12 @@ if (isSignup) {
   setTimeout(() => {
     document.getElementById("alertBox").style.display = "none";
   }, 760);
+});
+
+    window.addEventListener('beforeunload', function (e) {
+    // Standard message isn't always shown, but needed to trigger the prompt
+    e.preventDefault(); // Not strictly necessary, but good practice
+    e.returnValue = ''; // Required for Chrome and other modern browsers
 });
 </script>
 </body>
