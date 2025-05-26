@@ -75,6 +75,18 @@
       box-shadow: 0 -3px 10px rgba(0,0,0,0.6);
       border-top-left-radius: 12px; border-top-right-radius: 12px;
     }
+    #signout-btn {
+  margin-left: auto;         /* push this button as far right as it can go */
+  position: relative;        /* so you can layer it if needed */
+  background: #b33;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  color: white;
+  cursor: pointer;
+  font-family: Impact, sans-serif;
+  display: none;             /* hidden by default */
+}
     #timer { font-size: 30px; font-weight: bold; }
     #fullscreen-btn { background: none; border: none; margin-left: 20px; cursor: pointer; }
     #fullscreen-btn img { height: 40px; filter: invert(1); }
@@ -160,6 +172,100 @@
   margin-left: 0;       /* cancel the existing “push-everything-left” rule */
   margin-right: 20px;   /* keep your existing right padding */
 }
+
+/* Base styles remain untouched */
+
+/* Premium theme overrides */
+.premium-theme body, .premium-theme html {
+  background: linear-gradient(135deg, #203520, #4CAF50) !important;
+  color: #DFFFD6 !important;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+/* Auth overlay premium overrides */
+.premium-theme #auth-overlay {
+  background: rgba(30, 60, 10, 0.95) !important;
+}
+
+.premium-theme #auth-box {
+  background: linear-gradient(145deg, #2a4b10, #4b8b3b) !important;
+  box-shadow: 0 0 25px #88cc44 !important;
+  border-radius: 16px !important;
+}
+
+.premium-theme #auth-box h2 {
+  color: #a9e07b !important;
+}
+
+.premium-theme #auth-box input {
+  background: #223822 !important;
+  border: 1px solid #7cc24a !important;
+  color: #d0f4b4 !important;
+  border-radius: 8px !important;
+  padding: 10px !important;
+}
+
+.premium-theme #auth-box button {
+  background: linear-gradient(to bottom, #6abf3d, #3e7a15) !important;
+  color: #eaf9d2 !important;
+  font-weight: 700 !important;
+  border-radius: 10px !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 6px #88cc44aa !important;
+}
+
+/* Bottom bar premium */
+.premium-theme #bottom-bar {
+  background: linear-gradient(90deg, #355e2a, #89c978) !important;
+  box-shadow: 0 -4px 15px #8bcc42cc !important;
+  border-top-left-radius: 20px !important;
+  border-top-right-radius: 20px !important;
+}
+
+/* Buttons premium */
+.premium-theme #signout-btn {
+  background: #5a9c29 !important;
+  box-shadow: 0 0 12px #a8e07c !important;
+  font-weight: 600 !important;
+}
+
+/* Overlay */
+.premium-theme .overlay {
+  background: rgba(20, 40, 10, 0.95) !important;
+}
+
+.premium-theme .overlay-content {
+  background: linear-gradient(145deg, #295220, #4c9440) !important;
+  border: 2px solid #79c050 !important;
+  box-shadow: 0 0 20px #7dd041 !important;
+}
+
+.premium-theme .overlay-content h2 {
+  color: #b9f786 !important;
+}
+
+.premium-theme .overlay-content button {
+  background: linear-gradient(to bottom, #7cd34c, #4d8025) !important;
+  box-shadow: 0 0 10px #a0ea6e !important;
+}
+
+/* Server switch buttons premium */
+.premium-theme #server-switch button {
+  background: linear-gradient(to bottom, #456e26, #2d4b13) !important;
+  border-color: #6a9f33 !important;
+}
+
+.premium-theme #server-switch button:not(.selected):hover {
+  background: linear-gradient(to bottom, #578f33, #3d6b1a) !important;
+  border-color: #9cc95a !important;
+}
+
+.premium-theme #server-switch .selected {
+  background: linear-gradient(to bottom, #91c849, #4d8025) !important;
+  border-color: #ade874 !important;
+  color: #f0ffe1 !important;
+  font-weight: 700 !important;
+}
   </style>
 </head>
 <body>
@@ -167,6 +273,7 @@
   <meta name="description" content="V2: An immersive and secure Chromium VM running just on your browser!">
 
   <!-- —— AUTH OVERLAY —— -->
+  <div id="overlay">
   <div id="auth-overlay">
     <div id="auth-box">
       <h2 id="auth-title">Login</h2>
@@ -178,64 +285,7 @@
       <button id="auth-toggle">Don't have an account? Sign up</button>
     </div>
   </div>
-  <script>
-    const WORKER_BASE = "https://cvm-accounts.stilla-rrms-wlwv-k12-or-us.workers.dev";
-    let isSignup = false;
-
-    const overlay = document.getElementById("auth-overlay");
-    const titleEl = document.getElementById("auth-title");
-    const userEl  = document.getElementById("auth-username");
-    const passEl  = document.getElementById("auth-password");
-    const submit  = document.getElementById("auth-submit");
-    const toggle  = document.getElementById("auth-toggle");
-    const guest   = document.getElementById("auth-guest");
-    const errorEl = document.getElementById("auth-error");
-
-    // Toggle between Login / Sign up
-    toggle.addEventListener("click", () => {
-      isSignup = !isSignup;
-      titleEl.textContent  = isSignup ? "Sign Up" : "Login";
-      submit.textContent   = isSignup ? "Sign Up" : "Login";
-      toggle.textContent   = isSignup
-        ? "Already have an account? Login"
-        : "Don't have an account? Sign up";
-      errorEl.textContent = "";
-    });
-
-    // Handle Login / Sign up
-    submit.addEventListener("click", async () => {
-      const username = userEl.value.trim(),
-            password = passEl.value;
-      if (!username || !password) {
-        errorEl.textContent = "Please fill in both fields.";
-        return;
-      }
-      const endpoint = isSignup ? "/signup" : "/login";
-      try {
-        const res = await fetch(WORKER_BASE + endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Unknown error");
-        localStorage.setItem("cvm_token", data.token);
-        overlay.style.display = "none";
-      } catch (err) {
-        errorEl.textContent = err.message;
-      }
-    });
-
-    // I'm a guest → skip auth
-    guest.addEventListener("click", () => {
-      overlay.style.display = "none";
-    });
-
-    // Auto-login if token exists
-    if (localStorage.getItem("cvm_token")) {
-      overlay.style.display = "none";
-    }
-  </script>
+    </div>
 <body>
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <meta name="description" content="V2: An immersive and secure Chromium VM running just on your browser!">
@@ -325,14 +375,20 @@
   <div id="error-message"></div>
 
   <!-- Bottom bar -->
-  <div id="bottom-bar">
+ <div id="bottom-bar">
     <span id="timer">20:00</span>
     <button id="fullscreen-btn">
       <img src="https://cvm.rest/img/fullscreen.png" alt="FS" draggable="false">
     </button>
-    <img src="https://cvm.rest/img/CVM.png" alt="CVM" draggable="false">
-    <span id="copyright-text">2025 © WZ LLC, VM by HB.</span>
-  </div>
+
+  <!-- Put signout *before* the auto-margin logo -->
+  <button id="signout-btn">Sign Out</button>
+
+  <!-- Your CVM logo — now it will push *after* signout, not before -->
+  <img src="https://cvm.rest/img/CVM.png" alt="CVM">
+
+  <span id="copyright-text">2025 © WZ LLC, VM by HB.</span>
+</div>
 
   <!-- Fullscreen timer + toggle -->
   <div id="fullscreen-timer-wrapper">
@@ -341,147 +397,351 @@
   </div>
 
   <!-- Main script -->
-  <script type="module">
-    import Hyperbeam from "https://unpkg.com/@hyperbeam/web@latest/dist/index.js";
+<script type="module">
+import Hyperbeam from "https://unpkg.com/@hyperbeam/web@latest/dist/index.js";
 
-    let minuteAlertShown = false;
-    let serverUrl = document.querySelector('#server-switch button.selected').dataset.url;
+////////////////////////////////////////////////////////////////////////////////
+// 1) YOUR PREMIUM CHECKER
+function isUserPremium() {
+  const token = localStorage.getItem("cvm_token");
+  if (!token) return false;
+  return localStorage.getItem("cvm_premium") === "1";
+}
 
-    // server switch
-    document.querySelectorAll('#server-switch button').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('#server-switch button').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        serverUrl = btn.dataset.url;
+////////////////////////////////////////////////////////////////////////////////
+// 2) EVERYTHING THAT USED TO LIVE IN DOMContentLoaded
+//    We’ll move it into this function and call it *after* auth finishes.
+
+function initApp() {
+  // ======== replace server buttons if premium ========
+  const serverSwitch = document.getElementById("server-switch");
+  if (isUserPremium()) {
+    serverSwitch.innerHTML = `
+      <button
+        data-url="https://hyperbeam-premium.stilla-rrms-wlwv-k12-or-us.workers.dev/"
+        class="selected"
+      >Main 🟢</button>
+    `;
+  }
+
+  // ======== grab our selected serverUrl ========
+  let serverUrl = document.querySelector('#server-switch button.selected').dataset.url;
+
+  // ======== server-switch listener ========
+  document.querySelectorAll('#server-switch button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#server-switch button')
+              .forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      serverUrl = btn.dataset.url;
+    });
+  });
+
+  // ======== fullscreen toggle ========
+  const fsWrapper = document.getElementById('fullscreen-timer-wrapper');
+  const fsTimer   = document.getElementById('fullscreen-timer');
+  const toggleBtn = document.getElementById('toggle-timer-btn');
+  toggleBtn.addEventListener('click', () => {
+    const hidden = fsTimer.style.display === 'none';
+    fsTimer.style.display = hidden ? 'inline' : 'none';
+    toggleBtn.textContent = hidden ? '<' : '>';
+  });
+
+  // ======== main start() ========
+  async function start() {
+    setTimeout(() => document.getElementById('black-notif').classList.add('active'), 5000);
+    try {
+      const res = await fetch(serverUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "{}"
       });
+      const { embed_url } = await res.json();
+      await Hyperbeam(
+        document.getElementById("hyperbeam-container"),
+        embed_url,
+        { iframeAttributes: { allow: "fullscreen" } }
+      );
+    } catch {
+      const e = document.getElementById('error-message');
+      e.style.display = 'block';
+      e.textContent = "An unknown error occurred, try again later.";
+    }
+  }
+
+  // ======== overlay & timer wiring ========
+  let minuteAlertShown = false, timeoutExpired = false;
+  document.getElementById('acknowledge-checkbox').addEventListener('change', e =>
+    document.getElementById('close-warning').disabled = !e.target.checked
+  );
+  document.getElementById('close-warning').addEventListener('click', () => {
+    document.getElementById('warning').classList.remove('active');
+    start();
+    startTimer();
+  });
+  document.getElementById('minute-ok').addEventListener('click', () =>
+    document.getElementById('minute-warning').classList.remove('active')
+  );
+  document.getElementById('notif-no').addEventListener('click', () =>
+    document.getElementById('black-notif').classList.remove('active')
+  );
+  document.getElementById('notif-yes').addEventListener('click', () => {
+    document.getElementById('black-notif').classList.remove('active');
+    document.getElementById('black-alert').classList.add('active');
+  });
+  document.getElementById('black-ok').addEventListener('click', () =>
+    document.getElementById('black-alert').classList.remove('active')
+  );
+  document.getElementById('fullscreen-btn').addEventListener('click', async () => {
+    if (!document.fullscreenElement) {
+      await document.documentElement.requestFullscreen();
+    } else {
+      await document.exitFullscreen();
+    }
+  });
+  document.addEventListener('fullscreenchange', () => {
+    const inFS = !!document.fullscreenElement;
+    document.getElementById('bottom-bar').style.display = inFS ? 'none' : 'flex';
+    document.getElementById('hyperbeam-container')
+            .classList.toggle('fullscreen-mode', inFS);
+    fsWrapper.style.display = inFS ? 'flex' : 'none';
+    if (inFS) { fsTimer.style.display = 'inline'; toggleBtn.textContent = '<'; }
+  });
+
+  // ======== timer ========
+ function startTimer() {
+  let t = isUserPremium() ? 40 * 60 : 20 * 60; // 40 mins for premium, else 20 mins
+
+  // Set the timer display text BEFORE the countdown starts
+  updateTimerDisplay(t);
+
+  const iv = setInterval(() => {
+    if (t > 0) {
+      t--;
+      updateTimerDisplay(t);
+      if (t === 60 && !minuteAlertShown) {
+        minuteAlertShown = true;
+        document.getElementById('minute-warning').classList.add('active');
+      }
+    } else {
+      clearInterval(iv);
+      timeoutExpired = true;
+      window.removeEventListener('beforeunload', blockUnload);
+      window.location.href = 'https://cvm.rest/';
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay(seconds) {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  const txt = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  document.getElementById('timer').textContent = txt;
+  document.getElementById('fullscreen-timer').textContent = txt;
+}
+
+// On page load or after login/signup/guest selection:
+window.addEventListener('load', () => {
+  // Clear timer display at start
+  document.getElementById('timer').textContent = '';
+  document.getElementById('fullscreen-timer').textContent = '';
+
+  // Check premium status, set timer accordingly
+  if (isUserPremium()) {
+    timerDuration = 40 * 60; // 40 minutes for premium
+  } else {
+    timerDuration = 20 * 60; // 20 minutes for free users
+  }
+});
+
+  // Example: call this if user is premium
+function applyPremiumTheme() {
+  document.documentElement.classList.add('premium-theme');
+}
+
+// Example: call this if user is NOT premium
+function removePremiumTheme() {
+  document.documentElement.classList.remove('premium-theme');
+}
+
+// Detect premium status & apply theme
+// Replace this with your actual logic
+const userIsPremium = true; // or false
+
+if(userIsPremium) {
+  applyPremiumTheme();
+} else {
+  removePremiumTheme();
+}
+  // ======== key blocking ========
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey) {
+      if (!['c','v','C','V'].includes(e.key)) e.preventDefault();
+    } else if (e.altKey||e.metaKey) {
+      e.preventDefault();
+    } else if (['F1','F5','Tab','Escape'].includes(e.key)) {
+      e.preventDefault();
+    }
+  });
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// 3) HOOKING UP AUTH FLOW
+// The page already has #auth-overlay with login/signup/guest logic.
+// We need to call initApp() once auth finishes, *and only once*.
+
+document.addEventListener("DOMContentLoaded", () => {
+  const overlay = document.getElementById("overlay");
+  const guestBtn = document.getElementById("auth-guest");
+  const submit   = document.getElementById("auth-submit");
+  const toggle   = document.getElementById("auth-toggle");
+  const titleEl  = document.getElementById("auth-title");
+  const userEl   = document.getElementById("auth-username");
+  const passEl   = document.getElementById("auth-password");
+  const errorEl  = document.getElementById("auth-error");
+  const WORKER_BASE = "https://cvm-accounts.stilla-rrms-wlwv-k12-or-us.workers.dev";
+
+  let isSignup = false;
+  let started  = false;  // <— make sure initApp runs just once
+
+  function finishAuth() {
+    overlay.style.display = "none";
+    if (!started) {
+      started = true;
+      initApp();
+    }
+  }
+
+  // Automatic login if token present
+  if (localStorage.getItem("cvm_token")) {
+    finishAuth();
+  }
+
+  // Guest can bypass
+  guestBtn.addEventListener("click", finishAuth);
+
+  // Toggle login/signup UI
+  toggle.addEventListener("click", () => {
+    isSignup = !isSignup;
+    titleEl.textContent = isSignup ? "Sign Up" : "Login";
+    submit.textContent   = isSignup ? "Sign Up" : "Login";
+    toggle.textContent   = isSignup
+      ? "Already have an account? Login"
+      : "Don't have an account? Sign up";
+    errorEl.textContent = "";
+  });
+
+  // Login / Sign Up flow
+  submit.addEventListener("click", async () => {
+    const username = userEl.value.trim();
+    const password = passEl.value;
+    if (!username || !password) {
+      errorEl.textContent = "Please fill in both fields.";
+      return;
+    }
+    const endpoint = isSignup ? "/signup" : "/login";
+    try {
+      const res = await fetch(WORKER_BASE + endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Unknown error");
+      localStorage.setItem("cvm_token", data.token);
+      localStorage.setItem("cvm_username", username);
+      localStorage.setItem("cvm_premium", data.premium ? "1" : "0");
+      finishAuth();
+    } catch (err) {
+      errorEl.textContent = err.message;
+    }
+  });
+});
+</script>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const overlay = document.getElementById("overlay");
+
+    const WORKER_BASE = "https://cvm-accounts.stilla-rrms-wlwv-k12-or-us.workers.dev";
+    let isSignup = false;
+
+    const titleEl = document.getElementById("auth-title");
+    const userEl  = document.getElementById("auth-username");
+    const passEl  = document.getElementById("auth-password");
+    const submit  = document.getElementById("auth-submit");
+    const toggle  = document.getElementById("auth-toggle");
+    const guest   = document.getElementById("auth-guest");
+    const errorEl = document.getElementById("auth-error");
+    const signoutBtn = document.getElementById("signout-btn");
+
+    function updateAuthUI() {
+      const loggedIn = !!localStorage.getItem("cvm_token");
+      if (signoutBtn) {
+        signoutBtn.style.display = loggedIn ? "inline-block" : "none";
+      }
+    }
+
+    toggle.addEventListener("click", () => {
+      isSignup = !isSignup;
+      titleEl.textContent  = isSignup ? "Sign Up" : "Login";
+      submit.textContent   = isSignup ? "Sign Up" : "Login";
+      toggle.textContent   = isSignup
+        ? "Already have an account? Login"
+        : "Don't have an account? Sign up";
+      errorEl.textContent = "";
     });
 
-    // toggle button logic
-    const fsWrapper = document.getElementById('fullscreen-timer-wrapper');
-    const fsTimer   = document.getElementById('fullscreen-timer');
-    const toggleBtn = document.getElementById('toggle-timer-btn');
+    submit.addEventListener("click", async () => {
+      const username = userEl.value.trim();
+      const password = passEl.value;
 
-    toggleBtn.addEventListener('click', () => {
-      const hidden = fsTimer.style.display === 'none';
-      fsTimer.style.display = hidden ? 'inline' : 'none';
-      toggleBtn.textContent = hidden ? '<' : '>';
-    });
+      if (!username || !password) {
+        errorEl.textContent = "Please fill in both fields.";
+        return;
+      }
 
-    async function start() {
-      setTimeout(() => document.getElementById('black-notif').classList.add('active'), 5000);
+      const endpoint = isSignup ? "/signup" : "/login";
+
       try {
-        const res = await fetch(serverUrl, {
+        const res = await fetch(WORKER_BASE + endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({})
+          body: JSON.stringify({ username, password })
         });
-        const { embed_url } = await res.json();
-        await Hyperbeam(document.getElementById("hyperbeam-container"), embed_url, {
-          iframeAttributes: { allow: "fullscreen" }
-        });
-      } catch {
-        const e = document.getElementById('error-message');
-        e.style.display = 'block';
-        e.textContent = "An unknown error occurred, try again later.";
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Unknown error");
+
+        localStorage.setItem("cvm_token", data.token);
+        localStorage.setItem("cvm_username", username);
+        localStorage.setItem("cvm_premium", data.premium ? "1" : "0");
+
+        updateAuthUI();
+        overlay.style.display = "none";
+      } catch (err) {
+        errorEl.textContent = err.message;
       }
+    });
+
+    guest.addEventListener("click", () => {
+      overlay.style.display = "none";
+    });
+
+    if (localStorage.getItem("cvm_token")) {
+      overlay.style.display = "none";
     }
 
-    document.getElementById('acknowledge-checkbox').addEventListener('change', e => {
-      document.getElementById('close-warning').disabled = !e.target.checked;
-    });
-
-    document.getElementById('close-warning').addEventListener('click', () => {
-      document.getElementById('warning').classList.remove('active');
-      start();
-      startTimer();
-    });
-
-    document.getElementById('minute-ok').addEventListener('click', () => {
-      document.getElementById('minute-warning').classList.remove('active');
-    });
-
-    document.getElementById('notif-no').addEventListener('click', () => {
-      document.getElementById('black-notif').classList.remove('active');
-    });
-
-    document.getElementById('notif-yes').addEventListener('click', () => {
-      document.getElementById('black-notif').classList.remove('active');
-      document.getElementById('black-alert').classList.add('active');
-    });
-
-    document.getElementById('black-ok').addEventListener('click', () => {
-      document.getElementById('black-alert').classList.remove('active');
-    });
-
-    document.getElementById('fullscreen-btn').addEventListener('click', async () => {
-      if (!document.fullscreenElement) {
-        await document.documentElement.requestFullscreen();
-      } else {
-        await document.exitFullscreen();
-      }
-    });
-
-    // handle fullscreen change
-    document.addEventListener('fullscreenchange', () => {
-      const inFS = !!document.fullscreenElement;
-      document.getElementById('bottom-bar').style.display = inFS ? 'none' : 'flex';
-      document.getElementById('hyperbeam-container').classList.toggle('fullscreen-mode', inFS);
-      fsWrapper.style.display = inFS ? 'flex' : 'none';
-      if (inFS) {
-        fsTimer.style.display = 'inline';
-        toggleBtn.textContent = '<';
-      }
-    });
-
-    // timer logic
-    let timeoutExpired = false;
-    function startTimer() {
-      let t = 20 * 60;
-      const iv = setInterval(() => {
-        if (t > 0) {
-          t--;
-          const m = Math.floor(t/60), s = t%60;
-          const txt = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-          document.getElementById('timer').textContent = txt;
-          fsTimer.textContent = txt;
-          if (t===60 && !minuteAlertShown) {
-            minuteAlertShown = true;
-            document.getElementById('minute-warning').classList.add('active');
-          }
-        } else {
-          clearInterval(iv);
-          timeoutExpired = true;
-          window.removeEventListener('beforeunload', blockUnload);
-          window.location.href = 'https://cvm.rest/';
-        }
-      }, 1000);
+    if (signoutBtn) {
+      signoutBtn.addEventListener("click", () => {
+        localStorage.removeItem("cvm_token");
+        localStorage.removeItem("cvm_username");
+        updateAuthUI();
+        overlay.style.display = "flex";
+      });
     }
-    function blockUnload(e) { e.preventDefault(); e.returnValue = ''; }
-    window.addEventListener('beforeunload', blockUnload);
-    window.addEventListener('visibilitychange', () => {
-      if (timeoutExpired && document.visibilityState==='visible') {
-        window.location.href = 'https://cvm.rest/';
-      }
-    });
 
-document.addEventListener('keydown', function (e) {
-    // Allow only Ctrl+C and Ctrl+V
-    if (e.ctrlKey) {
-        const allowedKeys = ['c', 'v', 'C', 'V'];
-        if (!allowedKeys.includes(e.key)) {
-            e.preventDefault();
-        }
-    } else if (e.altKey || e.shiftKey || e.metaKey) {
-        // Block all other modifier key combinations
-        e.preventDefault();
-    } else {
-        // Optionally block all single key presses like F1, Tab, etc.
-        const blockedKeys = ['F1', 'F5', 'Tab', 'Escape'];
-        if (blockedKeys.includes(e.key)) {
-            e.preventDefault();
-        }
-    }
-});
-  </script>
+    updateAuthUI(); // Call it once after page load
+  });
+</script>
 </body>
 </html>
