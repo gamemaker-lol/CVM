@@ -577,6 +577,7 @@ function initApp() {
   // ======== apply premium theme ========
   // Premium theme toggle
 // Premium theme toggle
+// Premium theme toggle
 if (isUserPremium()) {
   document.documentElement.classList.add("premium-theme");
 } else {
@@ -595,17 +596,19 @@ if (isUserPremium()) {
   const paras = document.querySelectorAll('#warning .overlay-content p');
   if (paras[1]) {
     paras[1].textContent =
-      "There is a time limit to keep things fair for other users, and to keep the servers up without crashing! Also thank you for supporting the project!";
+      "With premium, you got a special theme, 40 minutes of time, AND are the first priority to fixing, CVM is also updated frequently, so you will get early updates too!";
   }
   if (paras[2]) {
     paras[2].innerHTML = 
       `If you are enjoying premium, consider subscribing to my <a href="https://www.youtube.com/@wilburzenith" target="_blank" style="color:#55C629; text-decoration:underline;">YouTube</a> channel!`;
   }
 
-  // Replace <i> with " " if text is "What is premium?"
-  const italicElems = document.querySelectorAll('#warning .overlay-content i');
-  italicElems.forEach(elem => {
-    if (elem.textContent.trim() === "What is premium?") {
+  // Replace both <i> cases in one loop
+  document.querySelectorAll('#warning .overlay-content i').forEach(elem => {
+    const txt = elem.textContent.trim();
+    if (txt === "What is premium?") {
+      elem.textContent = " ";
+    } else if (txt === "Why is there a time limit?") {
       elem.textContent = " ";
     }
   });
@@ -619,8 +622,9 @@ if (isUserPremium()) {
   }
 
   // ======== Add personalized greeting below h2 ========
-  const timeOfDay = getTimeOfDay();
-  const username = getUsername();
+  const hour = new Date().getHours();
+  const timeOfDay = hour < 12 ? "morning" : hour < 18 ? "afternoon" : "evening";
+  const username = localStorage.getItem("cvm_username") || "User";
   const greetingText = `Good ${timeOfDay}, ${username}`;
 
   const h2 = document.querySelector("#warning .overlay-content > h2");
@@ -630,7 +634,6 @@ if (isUserPremium()) {
     greeting.style.fontSize = "22px";
     greeting.style.fontWeight = "bold";
     greeting.style.marginTop = "8px";
-
     h2.insertAdjacentElement("afterend", greeting);
   }
 }
@@ -921,10 +924,10 @@ if (isSignup) {
     overlay.style.display = "none";
 
     // For signups, reload the page
-    if (isSignup) {
-      alert("Account successfully created!");
-      location.reload();
-    }
+   if (isSignup) {
+  window.removeEventListener('beforeunload', handleBeforeUnload);
+  location.reload();
+}
 
   } catch (err) {
     errorEl.textContent = err.message;
@@ -1053,11 +1056,12 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(`Duplicate check complete. Total paragraphs after processing: ${overlayContent.querySelectorAll("p").length}`);
   }, 100); // Small delay to allow other DOM modifications
 });
-    window.addEventListener('beforeunload', function (e) {
-    // Standard message isn't always shown, but needed to trigger the prompt
-    e.preventDefault(); // Not strictly necessary, but good practice
-    e.returnValue = ''; // Required for Chrome and other modern browsers
-});
+   function handleBeforeUnload(e) {
+  e.preventDefault();
+  e.returnValue = '';
+}
+
+window.addEventListener('beforeunload', handleBeforeUnload);
 </script>
 </body>
 </html>
