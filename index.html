@@ -1058,6 +1058,28 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(`Duplicate check complete. Total paragraphs after processing: ${overlayContent.querySelectorAll("p").length}`);
   }, 100); // Small delay to allow other DOM modifications
 });
+
+    let awayTimestamp = null;
+const maxAwayTime = 5 * 60 * 1000; // 5 minutes in ms
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    // User left tab, start timing
+    awayTimestamp = Date.now();
+  } else if (document.visibilityState === 'visible') {
+    // User came back, reset timer
+    awayTimestamp = null;
+  }
+});
+
+setInterval(() => {
+  if (awayTimestamp) {
+    if (Date.now() - awayTimestamp > maxAwayTime) {
+      location.reload();
+    }
+  }
+}, 10000); // check every 10 seconds
+
    function handleBeforeUnload(e) {
   e.preventDefault();
   e.returnValue = '';
