@@ -489,7 +489,7 @@
         Warning: Keybinds on the VM will only work in fullscreen mode.
       </p>
       <p style="color:#FD0000;font-weight:bold;font-size:20px;">
-        If every button is disabled here, try refreshing the page.
+        If every button is disabled here, try refreshing the page. Also, if you leave this tab for more than five minutes, your session will be stopped and your progress will be lost.
       </p>
       <label><input type="checkbox" id="acknowledge-checkbox"> I understand.</label><br>
       <button id="close-warning" disabled>Start session!</button><br>
@@ -1075,6 +1075,7 @@ document.addEventListener('visibilitychange', () => {
 setInterval(() => {
   if (awayTimestamp) {
     if (Date.now() - awayTimestamp > maxAwayTime) {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
       location.reload();
     }
   }
