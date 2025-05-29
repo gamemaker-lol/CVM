@@ -44,6 +44,34 @@
    OVERLAY & FADE
    -------------------------------------------------- */
 /* Overlay full screen and centering */
+        .\32 030 {
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+    }
+
+    .\32 030 img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      -webkit-user-drag: none;
+      user-drag: none;
+    }
+
+    .\32 030 img[draggable="false"] {
+      pointer-events: none;
+    }
+
+    .\32 030 .overlay-text {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-weight: bold;
+      color: purple;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
 #alertBox {
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -476,10 +504,18 @@
     <span style="font-size:48px;">🫤</span>
     <h2>Announcement:</h2>
     <p>CVM development is currently paused, so there won't be any new updates, don't worry though, if anything breaks I WILL fix it!</p>
-    <b></b>
+    <b> </b>
     <p>I am aware that HB is <b>rate-limiting</b>, it lasts a <u>MONTH</u>, and there is nothing I can do about it, so if a server doesn't work, try a different one, but if <b>ALL</b> of the servers get rate-limited, then I guess we're cooked... But, More servers will come if this happens too often. Very sorry for the inconvenience!</p>
-    
-    <button id="okButton">OK</button>
+     <div class="2030">
+    <img
+      src="https://cvm.rest/img/vapor.png"
+      alt="..."
+      draggable="false"
+    >
+    <div class="overlay-text">Partners?</div>
+  </div>
+    <b> </b>
+    <button style="margin-top: 30px;" id="okButton">OK</button>
   </div>
 </div>
 
