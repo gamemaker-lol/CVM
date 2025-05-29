@@ -1123,11 +1123,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }, 100); // Small delay to allow other DOM modifications
 });
 
-    if (window.location.href !== "https://cvm.rest/") {
-      window.removeEventListener('beforeunload', blockUnload);
-    window.location.href = "https://www.youtube.com/watch?v=xvFZjo5PgG0";
-  }
-
     let awayTimestamp = null;
 const maxAwayTime = 5 * 60 * 1000; // 5 minutes in ms
 
