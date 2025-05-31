@@ -38,7 +38,7 @@ if (isUserPremium()) {
   }
   if (paras[2]) {
     paras[2].innerHTML = 
-      `If you are enjoying premium, consider subscribing to my <a href="https://www.youtube.com/@wilburzenith" target="_blank" style="color:#55C629; text-decoration:underline;">YouTube</a> channel!`;
+      `If you are enjoying premium, consider subscribing to my <a href="https://www.youtube.com/@wilburzenith" target="_blank" style="color:#55C629; text-decoration:underline;">YrouTrube</a> channel!`;
   }
 
   // Replace both <i> cases in one loop
