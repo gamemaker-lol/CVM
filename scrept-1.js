@@ -131,7 +131,7 @@ function getUsername() {
     } catch {
       const e = document.getElementById('error-message');
       e.style.display = 'block';
-      e.textContent = "Stop trying to skid the VM, bro.";
+      e.textContent = "Stop trying to skid the VM, bro. (If you opened CVM on the VM, please, do NOT do that.)";
     }
   }
 
