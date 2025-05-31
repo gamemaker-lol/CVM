@@ -131,7 +131,7 @@ function getUsername() {
     } catch {
       const e = document.getElementById('error-message');
       e.style.display = 'block';
-      e.textContent = "Stop trying to skid the VM, bro. (If you opened CVM on the VM, please, do NOT do that.)";
+      e.textContent = "It's either one, you ran CVM on a proxy, two, you tried to run CVM in CVM, and three, you tried to skid (stop trying and just make your own).";
     }
   }
 
